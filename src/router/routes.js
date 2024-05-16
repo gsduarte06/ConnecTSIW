@@ -15,6 +15,8 @@ const Profile = () =>
   import(/* webpackChunkName: "common" */ "@/pages/Profile.vue");
 const HistoricoProfissional = () =>
   import("../pages/HistoricoProfissional.vue");
+const Classification = () =>
+  import("../pages/Classification.vue");
 
 const routes = [
   {
@@ -51,7 +53,12 @@ const routes = [
         path: "historicoprofissional",
         name: "historicoprofissional",
         component: HistoricoProfissional,
-      }
+      },
+      {
+        path: "classification",
+        name: "classification",
+        component: Classification,
+      },
     ],
   },
   { path: "*", component: NotFound },

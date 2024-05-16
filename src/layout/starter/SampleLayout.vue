@@ -7,32 +7,26 @@
           :name="$t('sidebar.dashboard')"
           icon="tim-icons icon-chart-pie-36"
         />
-        <sidebar-link
-          to="/classification"
-          name="Classification"
-          icon="tim-icons icon-trophy"
-        />
-        <sidebar-link
-          to="/profile"
-          :name="$t('sidebar.userProfile')"
-          icon="tim-icons icon-single-02"
-        />
       </template>
     </side-bar>
     <div class="main-panel">
       <top-navbar></top-navbar>
 
       <dashboard-content @click.native="toggleSidebar"> </dashboard-content>
+
+      <content-footer></content-footer>
     </div>
   </div>
 </template>
 <style lang="scss"></style>
 <script>
-import TopNavbar from "./TopNavbar.vue";
+import TopNavbar from "./SampleNavbar.vue";
+import ContentFooter from "./SampleFooter.vue";
 import DashboardContent from "./Content.vue";
 export default {
   components: {
     TopNavbar,
+    ContentFooter,
     DashboardContent,
   },
   methods: {

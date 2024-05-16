@@ -120,4 +120,5 @@ export default {
 .modal-content .btn {
   margin-right: 10px;
 }
+
 </style>
