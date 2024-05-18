@@ -17,6 +17,8 @@ const HistoricoProfissional = () =>
   import("../pages/HistoricoProfissional.vue");
 const Classification = () =>
   import("../pages/Classification.vue");
+const Admin = () =>
+  import("../pages/Admin.vue");
 
 const routes = [
   {
@@ -58,6 +60,11 @@ const routes = [
         path: "classification",
         name: "classification",
         component: Classification,
+      },
+      {
+        path: "admin",
+        name: "admin",
+        component: Admin,
       },
     ],
   },

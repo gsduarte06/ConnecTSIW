@@ -115,16 +115,16 @@
       </div>
     </div>
     <div class="row">
-    <div class="col-lg-12">
-      <card type="tasks" style="height: auto;">
-        <template slot="header">
-          <h6 class="title d-inline">
-            Posts
-          </h6>
-        </template>
-        <PostList></PostList>
-      </card>
-    </div>
+      <div class="col-lg-12">
+        <card type="tasks" style="height: auto;">
+          <template slot="header">
+            <h6 class="title d-inline">
+              Posts
+            </h6>
+          </template>
+          <PostList></PostList>
+        </card>
+      </div>
   </div>
 
   </div>

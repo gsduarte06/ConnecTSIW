@@ -17,6 +17,11 @@
           :name="$t('sidebar.userProfile')"
           icon="tim-icons icon-single-02"
         />
+        <sidebar-link
+          to="/admin"
+          name="Admin"
+          icon="tim-icons icon-single-02"
+        />
       </template>
     </side-bar>
     <div class="main-panel">
