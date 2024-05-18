@@ -1,80 +1,45 @@
 <template>
-    <div>
-        <div class="container">
+    <div class="container">
       <div class="row">
-        <div class="col-lg-12">
-          <card type="tasks">
-            <template slot="header">
-              <h6 class="title d-inline">
-                Create New Post
-              </h6>
-            </template>
-            <div class="card-body">
-              <form @submit.prevent="createPost">
-                <div class="form-group">
-                  <label for="title">Title:</label>
-                  <input type="text" class="form-control" id="title" v-model="title" required>
-                </div>
-                <div class="form-group">
-                  <label for="content">Content:</label>
-                  <textarea class="form-control" id="content" v-model="content" required></textarea>
-                </div>
-                <div class="form-group">
-                  <label for="image">Image:</label>
-                  <input type="file" class="form-control" id="image" ref="imageInput" @change="onImageChange" style="display: none;">
-                  <button type="button" class="btn btn-secondary" @click="triggerImageUpload">Add Image</button>
-                  <span v-if="imageName">{{ imageName }}</span>
-                </div>
-                <br>
-                <button type="submit" class="btn btn-primary">Create Post</button>
-              </form>
-            </div>
-          </card>
+        <div class="col-lg-12 text-center mt-5">
+          <h1>Admin</h1>
+          <!-- Add classes to router-links to style them like buttons -->
+          <router-link to="/admin/admininfo" class="button-link">Admin Info</router-link>
+          <router-link to="/admin/adminpost" class="button-link">Admin Post</router-link>
         </div>
       </div>
     </div>
-      <div class="row">
-        <div class="col-lg-12">
-          <card type="tasks" style="height: auto;">
-            <template slot="header">
-              <h6 class="title d-inline">
-                Posts
-              </h6>
-            </template>
-            <PostList></PostList>
-          </card>
-        </div>
-    </div>
-  
-    </div>
   </template>
-  <script>
-
-  import PostList from "./Dashboard/PostList.vue";
-
   
-  export default {
-    components: {
-      PostList,
-    },
-    data() {
-      return {
-        email: '',
-        password: '',
-        user:'',
-      };
-    },
-    methods: {
-      login() {
-        console.log('Email:', this.email);
-        console.log('Password:', this.password);
-        localStorage.setItem('isLoggedIn', true);
-        this.$router.push('/dashboard');
-      }
-    }
-  };
+  <script>
+  export default {};
   </script>
   
-  <style>
+  <style scoped>
+  .container {
+    margin-top: 50px;
+  }
+  
+  /* Define button style for router links */
+  .button-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    margin: 5px;
+  }
+  
+  /* Hover effect */
+  .button-link:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Active (clicked) state */
+  .button-link:active {
+    background-color: #004080;
+  }
   </style>
   

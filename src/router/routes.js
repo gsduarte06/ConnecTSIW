@@ -19,6 +19,12 @@ const Classification = () =>
   import("../pages/Classification.vue");
 const Admin = () =>
   import("../pages/Admin.vue");
+const UserManagement = () =>
+  import("../pages/AdminInfo.vue");
+const CreatePost = () =>
+  import("../pages/AdminPost.vue");
+const UserDetail = () =>
+  import("../pages/UserView.vue");
 
 const routes = [
   {
@@ -32,7 +38,7 @@ const routes = [
         component: Dashboard,
       },
       {
-        path: '/post/:id', 
+        path: 'post/:id',
         name: 'PostDetail',
         component: PostDetail,
       },
@@ -65,7 +71,27 @@ const routes = [
         path: "admin",
         name: "admin",
         component: Admin,
-      },
+},
+          {
+            path: "/admin/admininfo",
+            name: "admininfo",
+            component: UserManagement,
+          },
+          {
+            path: "/admin/adminpost",
+            name: "adminpost",
+            component: CreatePost,
+          },
+          {
+            path: "/admin/admininfo/userdetail",
+            name: "userdetail",
+            component: UserDetail,
+          }
+
+      
+     
+
+      
     ],
   },
   { path: "*", component: NotFound },
