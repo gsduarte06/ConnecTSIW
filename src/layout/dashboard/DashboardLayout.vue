@@ -26,19 +26,24 @@
     </side-bar>
     <div class="main-panel">
       <top-navbar></top-navbar>
-
-      <dashboard-content @click.native="toggleSidebar"> </dashboard-content>
+ <div class="content">
+    <fade-transition :duration="100" mode="out-in">
+      <!-- your content here -->
+      <router-view></router-view>
+    </fade-transition>
+  </div>
     </div>
   </div>
 </template>
 <style lang="scss"></style>
 <script>
 import TopNavbar from "./TopNavbar.vue";
-import DashboardContent from "./Content.vue";
+
+import { FadeTransition } from "vue2-transitions";
 export default {
   components: {
     TopNavbar,
-    DashboardContent,
+    FadeTransition
   },
   methods: {
     toggleSidebar() {
