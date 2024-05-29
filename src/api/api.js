@@ -10,7 +10,7 @@ export async function get(endpoint) {
     }
   }
   
-  export async function post(apiBaseUrl, endpoint, data) {
+  export async function post(endpoint, data) {
     try {
       const response = await fetch(`${apiBaseUrl}/${endpoint}`, {
         method: "POST",

@@ -10,14 +10,14 @@
             <form @submit.prevent="login">
               <div class="form-group">
                 <label for="user">Username:</label>
-                <input type="text" class="form-control" id="user" v-model="username" required />
+                <input type="text" class="form-control" id="user" v-model="user" required>
               </div>
               <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" class="form-control" id="password" v-model="password" required />
+                <input type="password" class="form-control" id="password" v-model="password" required>
               </div>
               <router-link to="/register" class="btn btn-link">Don't Have an Account?</router-link>
-              <br />
+              <br>
               <button type="submit" class="btn btn-primary">Login</button>
             </form>
           </div>
@@ -28,36 +28,25 @@
 </template>
 
 <script>
+import { useUserStore } from '../store/user';
+
 export default {
   data() {
     return {
-      username: '',
+      user: '',
       password: ''
     };
   },
   methods: {
     async login() {
+      const userStore = useUserStore();
       try {
-        const response = await fetch("http://localhost:8080/users/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            username: this.username,
-            password: this.password
-          })
-        });
-        
-        if (!response.ok) {
-          throw new Error("Network response was not ok " + response.statusText);
-        }
-        
-        const data = await response.json();
-        localStorage.setItem("token", data.accessToken);
+        await userStore.login({ username: this.user, password: this.password });
+        localStorage.setItem('isLoggedIn', true);
         this.$router.push('/dashboard');
       } catch (error) {
-        console.error("Erro ao fazer login:", error);
+        console.error("Login failed:", error);
+        alert("Login failed: " + error.message);
       }
     }
   }

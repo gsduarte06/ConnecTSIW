@@ -4,19 +4,25 @@
       <div class="col-lg-12">
         <card type="tasks">
           <template slot="header">
-            <h6 class="title d-inline">Register</h6>
+            <h6 class="title d-inline">
+              Register
+            </h6>
           </template>
           <div class="card-body">
             <form @submit.prevent="register">
               <div class="form-group">
                 <label for="user">Username:</label>
                 <input type="text" class="form-control" id="user" v-model="newUser" required>
+              </div>
+              <div class="form-group">
                 <label for="newEmail">Email:</label>
                 <input type="email" class="form-control" id="newEmail" v-model="newEmail" required>
               </div>
               <div class="form-group">
                 <label for="newPassword">Password:</label>
                 <input type="password" class="form-control" id="newPassword" v-model="newPassword" required>
+              </div>
+              <div class="form-group">
                 <label for="newConfirmPassword">Confirm Password:</label>
                 <input type="password" class="form-control" id="newConfirmPassword" v-model="newConfirmPassword" required>
               </div>
@@ -30,49 +36,39 @@
 </template>
 
 <script>
+import { useUserStore } from '../store/user'; // ajuste o caminho conforme necessário
+
 export default {
   data() {
     return {
+      newUser: '',
       newEmail: '',
       newPassword: '',
-      newUser: '',
       newConfirmPassword: ''
     };
   },
   methods: {
     async register() {
       if (this.newPassword !== this.newConfirmPassword) {
-        alert("Passwords do not match");
+        alert('Passwords do not match');
         return;
       }
-      
+
+      const userStore = useUserStore();
       try {
-        const response = await fetch("http://localhost:8080/users", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            username: this.newUser,
-            email: this.newEmail,
-            password: this.newPassword,
-            first_name: "Bruno", 
-            last_name: "Silva",  
-            nif: "123456789",       
-            role: "Alumni" 
-          })
+        await userStore.register({
+          username: this.newUser,
+          email: this.newEmail,
+          password: this.newPassword,
+          first_name:"",
+          last_name:"",
+          role:"regular",
+          nif:"123456789",
         });
-        
-        if (!response.ok) {
-          throw new Error("Network response was not ok " + response.statusText);
-        }
-        
-        const data = await response.json();
-        console.log("Registration successful:", data);
-        localStorage.setItem("isLoggedIn", true);
+        localStorage.setItem('isLoggedIn', true);
         this.$router.push('/dashboard');
       } catch (error) {
-        console.error("Erro ao registrar:", error);
+        console.error("Registration failed:", error);
         alert("Registration failed: " + error.message);
       }
     }
