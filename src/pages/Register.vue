@@ -63,7 +63,7 @@ export default {
           first_name:"",
           last_name:"",
           role:"regular",
-          nif:"123456789",
+          nif:"",
         });
         localStorage.setItem('isLoggedIn', true);
         this.$router.push('/dashboard');
