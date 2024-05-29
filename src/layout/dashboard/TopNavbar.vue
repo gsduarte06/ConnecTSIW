@@ -47,7 +47,6 @@
             >
               <a
                 slot="title"
-                href="#"
                 class="dropdown-toggle nav-link"
                 data-toggle="dropdown"
                 aria-expanded="true"
@@ -57,19 +56,19 @@
                 <p class="d-lg-none">New Notifications</p>
               </a>
               <li class="nav-link">
-                <a href="#" class="nav-item dropdown-item">Mike John responded to your email</a>
+                <a href="" class="nav-item dropdown-item">Mike John responded to your email</a>
               </li>
               <li class="nav-link">
-                <a href="#" class="nav-item dropdown-item">You have 5 more tasks</a>
+                <a href="" class="nav-item dropdown-item">You have 5 more tasks</a>
               </li>
               <li class="nav-link">
-                <a href="#" class="nav-item dropdown-item">Your friend Michael is in town</a>
+                <a href="" class="nav-item dropdown-item">Your friend Michael is in town</a>
               </li>
               <li class="nav-link">
-                <a href="#" class="nav-item dropdown-item">Another notification</a>
+                <a href="" class="nav-item dropdown-item">Another notification</a>
               </li>
               <li class="nav-link">
-                <a href="#" class="nav-item dropdown-item">Another one</a>
+                <a href="" class="nav-item dropdown-item">Another one</a>
               </li>
             </base-dropdown>
             <div v-if="isLoggedIn">
@@ -81,7 +80,7 @@
               >
                 <a
                   slot="title"
-                  href="#"
+                  
                   class="dropdown-toggle nav-link"
                   data-toggle="dropdown"
                   aria-expanded="true"
