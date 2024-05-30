@@ -56,21 +56,6 @@
   export default {
     components: {
       PostList,
-    },
-    data() {
-      return {
-        email: '',
-        password: '',
-        user:'',
-      };
-    },
-    methods: {
-      login() {
-        console.log('Email:', this.email);
-        console.log('Password:', this.password);
-        localStorage.setItem('isLoggedIn', true);
-        this.$router.push('/dashboard');
-      }
     }
   };
   </script>
