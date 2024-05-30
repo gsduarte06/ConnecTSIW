@@ -3,7 +3,8 @@ import * as api from "../api/api";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
-    user: null,
+    userId: null,
+    token:null,
     users: [],
   }),
   getters: {},
@@ -20,8 +21,10 @@ export const useUserStore = defineStore("user", {
     async login(userlog) {
       try {
         const data = await api.post('users/login', userlog);
-        this.user = data;
-        localStorage.setItem('user', JSON.stringify(data));
+        console.log(data);
+        this.userId = data.loggedUserId;
+        this.token = data.accessToken;
+        localStorage.setItem('userid', JSON.stringify(data.loggedUserId));
       } catch (error) {
         console.error("Error in store logging in:", error);
         throw error;
