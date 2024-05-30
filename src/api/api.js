@@ -2,6 +2,7 @@ const apiBaseUrl = 'http://127.0.0.1:8080'
 
 
 
+
 export async function get(endpoint) {
   try {
     const response = await fetch(`${apiBaseUrl}/${endpoint}`);
