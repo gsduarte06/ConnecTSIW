@@ -3,14 +3,16 @@ import * as api from "../api/api";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
-    user: null,
-    users: [],
+    userId: null,
+    token:null,
+    user: [],
   }),
   getters: {},
   actions: {
     async fetchUser() {
       try {
-        const data = await api.get('users');
+        const data = await api.get(`users/${this.userId}`);
+        console.log(data);
         this.user = Object.keys(data.message);
       } catch (error) {
         console.error("Error in store fetching user:", error);
@@ -20,8 +22,10 @@ export const useUserStore = defineStore("user", {
     async login(userlog) {
       try {
         const data = await api.post('users/login', userlog);
-        this.user = data;
-        localStorage.setItem('user', JSON.stringify(data));
+        console.log(data);
+        this.userId = data.loggedUserId;
+        this.token = data.accessToken;
+        localStorage.setItem('userid', JSON.stringify(data.loggedUserId));
       } catch (error) {
         console.error("Error in store logging in:", error);
         throw error;
@@ -30,8 +34,6 @@ export const useUserStore = defineStore("user", {
     async register(newUser) {
       try {
         const data = await api.post('users', newUser);
-        this.user = data;
-        localStorage.setItem('user', JSON.stringify(data));
       } catch (error) {
         console.error("Error in store registering:", error);
         throw error;

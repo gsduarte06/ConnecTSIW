@@ -87,6 +87,7 @@ export default {
           role: "regular",
           nif: "",
         });
+        await userStore.login({ username: this.newUser, password: this.newPassword });
         localStorage.setItem("isLoggedIn", true);
         this.$router.push("/dashboard");
       } catch (error) {
