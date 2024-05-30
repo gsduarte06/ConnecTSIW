@@ -18,17 +18,15 @@
   </div>
 </template>
 <script>
+import { useUserStore } from "../store/user";
 export default {
   data() {
     return {
       user: null,
+      userStore: useUserStore(),
     };
   },
-  created() {
-    const userId = this.$route.params.id;
-    // Fetch user details based on userId
-    this.fetchUser(userId);
-  },
+  created() {},
   methods: {
     fetchUser(userId) {
       // Replace this with an actual API call
