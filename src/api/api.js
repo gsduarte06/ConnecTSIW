@@ -1,8 +1,14 @@
 const apiBaseUrl = 'http://127.0.0.1:8080'
 
-export async function get(endpoint) {
+export async function get(endpoint, data) {
     try {
-      const response = await fetch(`${apiBaseUrl}/${endpoint}`);
+      const response = await fetch(`${apiBaseUrl}/${endpoint}`,{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
       return handleResponse(response);
     } catch (error) {
       console.error(`Error fetching ${endpoint}:`, error);
@@ -13,11 +19,10 @@ export async function get(endpoint) {
   export async function post(endpoint, data) {
     try {
       const response = await fetch(`${apiBaseUrl}/${endpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+        method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
       });
       return handleResponse(response);
     } catch (error) {
