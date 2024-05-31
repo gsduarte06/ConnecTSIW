@@ -3,25 +3,71 @@ import * as api from "../api/api";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
-    user: null,
-    users: [],
+    userId: null || 4,
+    token:null,
+    user: [],
+    background:[]
   }),
-  getters: {},
+  getters: {
+    getUser(){
+      return this.user
+    },
+    getToken(){
+      return this.token
+    },
+    getBg(){
+      return this.background
+    }
+  },
   actions: {
     async fetchUser() {
       try {
-        const data = await api.get('users');
-        this.user = Object.keys(data.message);
+        const data = await api.get(`users/${this.userId}`);
+        this.user = data;
+        console.log(this.user);
       } catch (error) {
         console.error("Error in store fetching user:", error);
         throw error;
       }
     },
+    async fetchBackground(token) {
+      try {
+        const data = await api.get(`users/${this.userId}/backgrounds`, token);
+        this.background = data;
+      } catch (error) {
+        console.error("Error in store fetching user:", error);
+        throw error;
+      }
+    },
+
+    async addBackground(data,token) {
+      try {
+        const redata = await api.post(`users/${this.userId}/backgrounds`, data,token);
+      } catch (error) {
+        console.error("Error in store registering:", error);
+        throw error;
+      }
+    },
+
+    async updateUser(data) {
+      try {
+        const redata = await api.patch(`users/${this.userId}/`, data , this.token);
+        console.log(redata);
+        await this.fetchUser();
+        console.log(this.user);
+      } catch (error) {
+        console.error("Error in store fetching user:", error);
+        throw error;
+      }
+    },
+
     async login(userlog) {
       try {
         const data = await api.post('users/login', userlog);
-        this.user = data;
-        localStorage.setItem('user', JSON.stringify(data));
+        console.log(data);
+        this.userId = data.loggedUserId;
+        this.token = data.accessToken;
+        localStorage.setItem('userid', JSON.stringify(data.loggedUserId));
       } catch (error) {
         console.error("Error in store logging in:", error);
         throw error;
@@ -30,8 +76,6 @@ export const useUserStore = defineStore("user", {
     async register(newUser) {
       try {
         const data = await api.post('users', newUser);
-        this.user = data;
-        localStorage.setItem('user', JSON.stringify(data));
       } catch (error) {
         console.error("Error in store registering:", error);
         throw error;
