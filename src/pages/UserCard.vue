@@ -46,7 +46,7 @@ export default {
       position: "",
     };
   },
-  async computed() {
+  async mounted() {
     await this.userStore.fetchBackground(this.userStore.getToken);
     let bg = this.userStore.getBg;
     if (bg.length == 0) {
