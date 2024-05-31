@@ -8,7 +8,6 @@
           icon="tim-icons icon-chart-pie-36"
         />
         <sidebar-link
-          v-if="isLoggedUser"
           to="/classification"
           name="Classification"
           icon="tim-icons icon-trophy"
