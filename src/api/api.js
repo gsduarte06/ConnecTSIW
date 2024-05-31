@@ -58,6 +58,27 @@ export async function patch(endpoint, data, token) {
 
 
 
+export async function del(endpoint, token,data) {
+  try {
+    const response = await fetch(`${apiBaseUrl}/${endpoint}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+      
+
+    });
+    return handleResponse(response);
+  } catch (error) {
+    console.error(`Error posting to ${endpoint}:`, error);
+    throw error;
+  }
+}
+
+
+
 async function handleResponse(response) {
   if (!response.ok) {
     const errorMessage = await response.text();

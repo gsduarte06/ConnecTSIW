@@ -21,5 +21,16 @@ export const usePositionStore = defineStore("position", {
         throw error;
       }
     },
+
+    
+
+    async addPosition(data,token) {
+      try {
+        const redata = await api.post('positions', data ,token);
+      } catch (error) {
+        console.error("Error in store registering:", error);
+        throw error;
+      }
+    },
   },
 });

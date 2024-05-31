@@ -40,6 +40,15 @@ export const useUserStore = defineStore("user", {
       }
     },
 
+    async addBackground(data,token) {
+      try {
+        const redata = await api.post(`users/${this.userId}/backgrounds`, data,token);
+      } catch (error) {
+        console.error("Error in store registering:", error);
+        throw error;
+      }
+    },
+
     async updateUser(data) {
       try {
         const redata = await api.patch(`users/${this.userId}/`, data , this.token);
