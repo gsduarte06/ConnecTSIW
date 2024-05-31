@@ -3,22 +3,55 @@ import * as api from "../api/api";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
-    userId: null,
+    userId: null || 4,
     token:null,
     user: [],
+    background:[]
   }),
-  getters: {},
+  getters: {
+    getUser(){
+      return this.user
+    },
+    getToken(){
+      return this.token
+    },
+    getBg(){
+      return this.background
+    }
+  },
   actions: {
     async fetchUser() {
       try {
         const data = await api.get(`users/${this.userId}`);
-        console.log(data);
-        this.user = Object.keys(data.message);
+        this.user = data;
+        console.log(this.user);
       } catch (error) {
         console.error("Error in store fetching user:", error);
         throw error;
       }
     },
+    async fetchBackground(token) {
+      try {
+        const data = await api.get(`users/${this.userId}/backgrounds`, token);
+        this.background = data;
+      } catch (error) {
+        console.error("Error in store fetching user:", error);
+        throw error;
+      }
+    },
+
+    async updateUser(data) {
+      try {
+        const redata = await api.patch(`users/${this.userId}/`, data , this.token);
+        console.log(redata);
+        await this.fetchUser();
+        console.log(this.user);
+      } catch (error) {
+        console.error("Error in store fetching user:", error);
+        throw error;
+      }
+    },
+
     async login(userlog) {
       try {
         const data = await api.post('users/login', userlog);
