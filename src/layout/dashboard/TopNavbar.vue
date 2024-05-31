@@ -5,10 +5,7 @@
   >
     <div class="container-fluid">
       <div class="navbar-wrapper">
-        <div
-          class="navbar-toggle d-inline"
-          :class="{ toggled: $sidebar.showSidebar }"
-        >
+        <div class="navbar-toggle d-inline" :class="{ toggled: $sidebar.showSidebar }">
           <button
             type="button"
             class="navbar-toggler"
@@ -39,12 +36,7 @@
       <collapse-transition>
         <div class="collapse navbar-collapse show" v-show="showMenu">
           <ul class="navbar-nav ml-auto">
-            <base-dropdown 
-              v-if="isLoggedIn"
-              tag="li"
-              title-tag="a"
-              class="nav-item"
-            >
+            <base-dropdown v-if="isLoggedIn" tag="li" title-tag="a" class="nav-item">
               <a
                 slot="title"
                 class="dropdown-toggle nav-link"
@@ -56,13 +48,17 @@
                 <p class="d-lg-none">New Notifications</p>
               </a>
               <li class="nav-link">
-                <a href="" class="nav-item dropdown-item">Mike John responded to your email</a>
+                <a href="" class="nav-item dropdown-item"
+                  >Mike John responded to your email</a
+                >
               </li>
               <li class="nav-link">
                 <a href="" class="nav-item dropdown-item">You have 5 more tasks</a>
               </li>
               <li class="nav-link">
-                <a href="" class="nav-item dropdown-item">Your friend Michael is in town</a>
+                <a href="" class="nav-item dropdown-item"
+                  >Your friend Michael is in town</a
+                >
               </li>
               <li class="nav-link">
                 <a href="" class="nav-item dropdown-item">Another notification</a>
@@ -80,7 +76,6 @@
               >
                 <a
                   slot="title"
-                  
                   class="dropdown-toggle nav-link"
                   data-toggle="dropdown"
                   aria-expanded="true"
@@ -92,7 +87,9 @@
                   <p class="d-lg-none">Log out</p>
                 </a>
                 <li class="nav-link">
-                  <router-link class="nav-item dropdown-item" to="/profile">Profile</router-link>
+                  <router-link class="nav-item dropdown-item" to="/profile"
+                    >Profile</router-link
+                  >
                 </li>
                 <li class="nav-link">
                   <a href="#" class="nav-item dropdown-item" @click="logout">Log out</a>
@@ -111,12 +108,12 @@
 
 <script>
 import { CollapseTransition } from "vue2-transitions";
-import { RouterLink } from 'vue-router';
-
+import { RouterLink } from "vue-router";
+import { useUserStore } from "../../store/user";
 export default {
   components: {
     CollapseTransition,
-    RouterLink,  
+    RouterLink,
   },
   computed: {
     routeName() {
@@ -124,13 +121,14 @@ export default {
       return this.capitalizeFirstLetter(name);
     },
     isLoggedIn() {
-      return localStorage.getItem('isLoggedIn') === 'true';
-    }
+      return this.userStore.getToken != null;
+    },
   },
   data() {
     return {
       activeNotifications: false,
       showMenu: false,
+      userStore: useUserStore(),
     };
   },
   methods: {
@@ -150,7 +148,8 @@ export default {
       this.showMenu = !this.showMenu;
     },
     logout() {
-      localStorage.setItem('isLoggedIn', 'false');
+      localStorage.setItem("isLoggedIn", "false");
+      if (this.$route.name != "dashboard") this.$router.push("/");
       window.location.reload();
     },
   },
