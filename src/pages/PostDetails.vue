@@ -23,7 +23,7 @@
               </div>
             </div>
             <div class="text-center mb-3">
-              <textarea class="form-control" v-model="this.comment" rows="3" placeholder="Write a comment"></textarea>
+              <textarea class="form-control" v-model="this.createComment" rows="3" placeholder="Write a comment"></textarea>
             </div>
             <div class="text-center">
               <button class="btn btn-primary" @click="submitComment">Submit Comment</button>
@@ -36,14 +36,15 @@
 </template>
 
 <script>
-import { usePostsStore } from "../../store/posts";
-import { useUserStore } from "../../store/user";
+import { usePostsStore } from "../store/posts";
+import { useUserStore } from "../store/user";
 
 export default {
   data() {
     return {
       post: {},
       comments: [],
+      createComment: '',
       users: {},
     };
   },
@@ -58,8 +59,8 @@ export default {
     this.comments = postsStore.comments;
 
     for (let comment of this.comments) {
-      await userStore.fetchUser(this.comment.id_user);
-      this.$set(this.users, this.comment.id_user, userStore.user);
+      await userStore.fetchUser(comment.id_user);
+      this.$set(this.users, comment.id_user, userStore.user);
     }
   },
   methods: {
@@ -70,8 +71,8 @@ export default {
       return this.users[userId]?.name || "User";
     },
     submitComment() {
-      console.log('Comment submitted:', this.comment);
-      this.comment = '';
+      console.log('Comment submitted:', this.createComment);
+      this.createComment = '';
     }
   }
 };

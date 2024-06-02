@@ -133,7 +133,7 @@
 import LineChart from "@/components/Charts/LineChart";
 import BarChart from "@/components/Charts/BarChart";
 import * as chartConfigs from "@/components/Charts/config";
-import PostList from "./Dashboard/PostList.vue";
+import PostList from "./PostList.vue";
 import config from "@/config";
 
 export default {

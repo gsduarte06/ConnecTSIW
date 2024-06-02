@@ -38,7 +38,7 @@
 
 <script>
 import { BaseTable } from "@/components";
-import { usePostsStore } from "../../store/posts";
+import { usePostsStore } from "../store/posts";
 
 export default {
   components: {
