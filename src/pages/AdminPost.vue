@@ -50,7 +50,7 @@
   </template>
   <script>
 
-  import PostList from "./Dashboard/PostList.vue";
+  import PostList from "./PostList.vue";
 
   
   export default {

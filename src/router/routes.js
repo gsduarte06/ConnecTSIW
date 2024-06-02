@@ -10,7 +10,7 @@ const Login = () =>
 const Register = () =>
   import("../pages/Register.vue");
 const PostDetail = () =>
-  import("../pages/Dashboard/PostDetails.vue");
+  import("../pages/PostDetails.vue");
 const Profile = () =>
   import(/* webpackChunkName: "common" */ "@/pages/Profile.vue");
 const HistoricoProfissional = () =>
