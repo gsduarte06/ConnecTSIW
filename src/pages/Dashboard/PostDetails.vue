@@ -10,20 +10,20 @@
           </template>
           <div class="card-body">
             <div class="mb-8">
-              <p class="title mb-0">{{ post.Conteudo_Publicacao }}</p>
-              <p class="text-muted">{{ post.Data_Criado }}</p>
+              <p class="title mb-0">{{ post.content }}</p>
+              <p class="text-muted">{{ post.date_post }}</p>
             </div>
             <div class="text-center mb-3">
-              <img :src="post.Imagem" alt="Image" style="max-width: 450px; max-height: 300px; display: block; margin: 0 auto;">
+              <img :src="post.imagem" alt="Image" style="max-width: 450px; max-height: 300px; display: block; margin: 0 auto;">
             </div>
-            <div v-if="post.Comment && post.Comment.length > 0">
+            <div v-if="this.comments.length > 0">
               <h6>Comentários:</h6>
-              <div v-for="comment in post.Comment" :key="comment.Id_Comment">
-                <p><strong>{{ comment.Name }}:</strong> {{ comment.Conteudo_Comment }}</p>
+              <div v-for="comment in this.comments" :key="comment.id_comment">
+                <p><strong>{{ getUserName(comment.id_user) }}:</strong> {{ comment.content }}</p>
               </div>
             </div>
             <div class="text-center mb-3">
-              <textarea class="form-control" v-model="comment" rows="3" placeholder="Write a comment"></textarea>
+              <textarea class="form-control" v-model="this.comment" rows="3" placeholder="Write a comment"></textarea>
             </div>
             <div class="text-center">
               <button class="btn btn-primary" @click="submitComment">Submit Comment</button>
@@ -36,26 +36,38 @@
 </template>
 
 <script>
-import postData from '../Dashboard/postData.js';
+import { usePostsStore } from "../../store/posts";
+import { useUserStore } from "../../store/user";
 
 export default {
   data() {
     return {
       post: {},
-      comment: '',
-      posts:[],
+      comments: [],
+      users: {},
     };
   },
-  created() {
-    const postId = this.$route.params.id; 
-    this.posts = postData;
-    this.post = this.getPostById(postId); 
-    console.log(this.post)
+  async created() {
+    const postId = this.$route.params.id;
+    const postsStore = usePostsStore();
+    const userStore = useUserStore();
+
+    await postsStore.fetchPosts();
+    this.post = this.getPostById(postId, postsStore.posts);
+    await postsStore.fetchCommentbyPost(postId);
+    this.comments = postsStore.comments;
+
+    for (let comment of this.comments) {
+      await userStore.fetchUser(this.comment.id_user);
+      this.$set(this.users, this.comment.id_user, userStore.user);
+    }
   },
-  
   methods: {
-    getPostById(id) {
-      return this.posts.find(post => post.Id_Publicacao == id);
+    getPostById(id, posts) {
+      return posts.find(post => post.id_post == id);
+    },
+    getUserName(userId) {
+      return this.users[userId]?.name || "User";
     },
     submitComment() {
       console.log('Comment submitted:', this.comment);
