@@ -38,7 +38,7 @@
 
 <script>
 import { BaseTable } from "@/components";
-import postData from "../Dashboard/postData.js";
+import { usePostsStore } from "../store/posts";
 
 export default {
   components: {
@@ -46,26 +46,33 @@ export default {
   },
   data() {
     return {
-      taskList: [],
       showModal: false,
       selectedPost: {},
     };
   },
-  created() {
-    this.taskList = postData;
-  },
   computed: {
+    posts() {
+      return usePostsStore().posts;
+    },
     tableData() {
-      return this.taskList.map(item => ({
-        id: item.Id_Publicacao,
-        title: item.Conteudo_Publicacao,
-        image: item.Imagem,
-        date: item.Data_Criado,
-        date_inicio: item.Data_Inicio,
+      return this.posts.map(item => ({
+        id: item.id_post,
+        title: item.content,
+        image: item.image,
+        date: item.date_post,
+        date_inicio: item.begin_date,
       }));
     },
   },
   methods: {
+    async fetchPosts() {
+      try {
+        await usePostsStore().fetchPosts();
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+        throw error;
+      }
+    },
     openModal(post) {
       this.selectedPost = post;
       this.showModal = true;
@@ -76,49 +83,9 @@ export default {
     participate() {
       console.log("Participar");
     }
-  }
+  },
+  async created() {
+    await this.fetchPosts();
+  },
 };
 </script>
-
-<style scoped>
-.modal {
-  display: none;
-
-}
-
-.modal.is-active {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.modal-content {
-  background-color: #201c24;
-  padding: 20px;
-  width: 40%;
-}
-
-.modal-close {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.5em;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-
-.modal-content .btn {
-  margin-right: 10px;
-}
-
-</style>
