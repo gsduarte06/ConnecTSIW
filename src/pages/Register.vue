@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { useUserStore } from "../store/user"; // ajuste o caminho conforme necessário
+import { useUserStore } from "../store/user"; 
 
 export default {
   data() {
@@ -88,6 +88,7 @@ export default {
           nif: "",
         });
         await userStore.login({ username: this.newUser, password: this.newPassword });
+        await userStore.fetchUser()
         localStorage.setItem("isLoggedIn", true);
         this.$router.push("/dashboard");
       } catch (error) {

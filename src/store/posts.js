@@ -38,6 +38,9 @@ export const usePostsStore = defineStore("posts", {
         console.error("Error creating comment:", error);
         throw error;
       }
+    },
+    async likeComment(){
+      
     }
   },
 });

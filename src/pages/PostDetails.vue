@@ -18,8 +18,13 @@
             </div>
             <div v-if="comments.length > 0">
               <h6>Comentários:</h6>
-              <div v-for="comment in comments" :key="comment.id_comment">
-                <p><strong>{{ getUserName(comment.id_user) }}:</strong> {{ comment.content }}</p>
+              <div v-for="comment in comments" :key="comment.id_comment" class="comment">
+                <p class="comment-content">
+                  <strong>{{ getUserName(comment.id_user) }}:</strong> {{ comment.content }}
+                </p>
+                <span class="like-icon" :class="{ clicked: comment.likedByUser }" @click="likeComment(comment)">
+                  ❤️ <span class="like-count">5</span>
+                </span>
               </div>
             </div>
             <div class="text-center mb-3">
@@ -86,10 +91,42 @@ export default {
       } catch (error) {
         console.error("Error submitting comment:", error);
       }
+    },
+    async likeComment(comment) {
+      const userStore = useUserStore();
+      const activeUserName = userStore.getUserById(userStore.userId).username;
+
+      if (!comment.likedByUser) {
+        comment.likes++;
+        comment.likedByUser = true;
+        console.log(`${activeUserName} liked the comment`);
+      } else {
+        comment.likes--;
+        comment.likedByUser = false;
+        console.log(`${activeUserName} unliked the comment`);
+      }
     }
   }
 };
 </script>
-<style>
 
+<style scoped>
+.comment {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.comment-content {
+  margin-right: 10px; 
+}
+
+.like-icon {
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.like-icon.clicked {
+  opacity: 1;
+}
 </style>
