@@ -29,6 +29,15 @@ export const usePostsStore = defineStore("posts", {
         console.error("Error fetching posts:", error);
         throw error;
       }
+    },
+    async createComment(PostId, commentData, token) {
+      try {
+        await api.post(`posts/${PostId}/comments`, commentData, token);
+        await this.fetchCommentbyPost(PostId); 
+      } catch (error) {
+        console.error("Error creating comment:", error);
+        throw error;
+      }
     }
   },
 });

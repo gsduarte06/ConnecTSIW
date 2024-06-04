@@ -16,14 +16,14 @@
             <div class="text-center mb-3">
               <img :src="post.imagem" alt="Image" style="max-width: 450px; max-height: 300px; display: block; margin: 0 auto;">
             </div>
-            <div v-if="this.comments.length > 0">
+            <div v-if="comments.length > 0">
               <h6>Comentários:</h6>
-              <div v-for="comment in this.comments" :key="comment.id_comment">
+              <div v-for="comment in comments" :key="comment.id_comment">
                 <p><strong>{{ getUserName(comment.id_user) }}:</strong> {{ comment.content }}</p>
               </div>
             </div>
             <div class="text-center mb-3">
-              <textarea class="form-control" v-model="this.createComment" rows="3" placeholder="Write a comment"></textarea>
+              <textarea class="form-control" v-model="createCommentContent" rows="3" placeholder="Write a comment"></textarea>
             </div>
             <div class="text-center">
               <button class="btn btn-primary" @click="submitComment">Submit Comment</button>
@@ -44,7 +44,7 @@ export default {
     return {
       post: {},
       comments: [],
-      createComment: '',
+      createCommentContent: '',
       users: {},
     };
   },
@@ -59,8 +59,8 @@ export default {
     this.comments = postsStore.comments;
 
     for (let comment of this.comments) {
-      await userStore.fetchUser(comment.id_user);
-      this.$set(this.users, comment.id_user, userStore.user);
+      await userStore.fetchUserById(comment.id_user); 
+      this.$set(this.users, comment.id_user, userStore.getUserById(comment.id_user));
     }
   },
   methods: {
@@ -68,16 +68,28 @@ export default {
       return posts.find(post => post.id_post == id);
     },
     getUserName(userId) {
-      return this.users[userId]?.name || "User";
+      return this.users[userId]?.username || "User";
     },
-    submitComment() {
-      console.log('Comment submitted:', this.createComment);
-      this.createComment = '';
+    async submitComment() {
+      const postId = this.$route.params.id;
+      const userStore = useUserStore();
+      const postsStore = usePostsStore();
+      const commentData = {
+        idUser: userStore.userId,
+        content: this.createCommentContent,
+      };
+      try {
+        await postsStore.createComment(postId, commentData, userStore.token);
+        await postsStore.fetchCommentbyPost(postId); 
+        this.comments = postsStore.comments;
+        this.createCommentContent = ''; 
+      } catch (error) {
+        console.error("Error submitting comment:", error);
+      }
     }
   }
 };
 </script>
-
 <style>
 
 </style>

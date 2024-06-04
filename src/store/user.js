@@ -4,29 +4,42 @@ import * as api from "../api/api";
 export const useUserStore = defineStore("user", {
   state: () => ({
     userId: null || 4,
-    token:null,
+    token: null,
     user: [],
-    background:[]
+    background: [],
+    users: {},
   }),
   getters: {
-    getUser(){
-      return this.user
+    getUser() {
+      return this.user;
     },
-    getToken(){
-      return this.token
+    getToken() {
+      return this.token;
     },
-    getBg(){
-      return this.background
+    getBg() {
+      return this.background;
+    },
+    getUserById: (state) => (id) => {
+      return state.users[id] || {};
     }
   },
   actions: {
+    async fetchUserById(userId) {
+      try {
+        const data = await api.get(`users/${userId}`);
+        this.users[userId] = data;
+      } catch (error) {
+        console.error("Error fetching user by ID:", error);
+        throw error;
+      }
+    },
     async fetchUser() {
       try {
         const data = await api.get(`users/${this.userId}`);
         this.user = data;
         console.log(this.user);
       } catch (error) {
-        console.error("Error in store fetching user:", error);
+        console.error("Error fetching user:", error);
         throw error;
       }
     },

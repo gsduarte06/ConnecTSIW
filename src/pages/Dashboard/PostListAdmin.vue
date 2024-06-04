@@ -67,7 +67,6 @@
 
 <script>
 import { BaseTable } from "@/components";
-import postData from "../Dashboard/postData.js";
 
 export default {
   components: {
