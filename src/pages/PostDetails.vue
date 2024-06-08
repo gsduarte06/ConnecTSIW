@@ -14,7 +14,7 @@
               <p class="text-muted">{{ post.date_post }}</p>
             </div>
             <div class="text-center mb-3">
-              <img :src="post.imagem" alt="Image" style="max-width: 450px; max-height: 300px; display: block; margin: 0 auto;">
+              <img :src="post.image" alt="Image" style="max-width: 450px; max-height: 300px; display: block; margin: 0 auto;">
             </div>
             <div v-if="comments.length > 0">
               <h6>Comentários:</h6>
@@ -22,8 +22,8 @@
                 <p class="comment-content">
                   <strong>{{ getUserName(comment.id_user) }}:</strong> {{ comment.content }}
                 </p>
-                <span class="like-icon" :class="{ clicked: comment.likedByUser }" @click="likeComment(comment)">
-                  ❤️ <span class="like-count">5</span>
+                <span class="like-icon">
+                  ❤️ <span class="like-count">{{ getLikes(comment.id_comment) }}</span>
                 </span>
               </div>
             </div>
@@ -73,7 +73,19 @@ export default {
       return posts.find(post => post.id_post == id);
     },
     getUserName(userId) {
-      return this.users[userId]?.username || "User";
+      const userStore = useUserStore();
+      return this.users[userId]?.username || userStore.user.username;
+    },
+    async getLikes(commentId) {
+      const postsStore = usePostsStore();
+      try {
+        const likes = await postsStore.fetchLikebyComment(commentId);
+        console.log(likes)
+        return likes || 0;
+      } catch (error) {
+        console.error("Error fetching likes:", error);
+        return 0;
+      }
     },
     async submitComment() {
       const postId = this.$route.params.id;
@@ -90,20 +102,6 @@ export default {
         this.createCommentContent = ''; 
       } catch (error) {
         console.error("Error submitting comment:", error);
-      }
-    },
-    async likeComment(comment) {
-      const userStore = useUserStore();
-      const activeUserName = userStore.getUserById(userStore.userId).username;
-
-      if (!comment.likedByUser) {
-        comment.likes++;
-        comment.likedByUser = true;
-        console.log(`${activeUserName} liked the comment`);
-      } else {
-        comment.likes--;
-        comment.likedByUser = false;
-        console.log(`${activeUserName} unliked the comment`);
       }
     }
   }
@@ -124,9 +122,10 @@ export default {
 .like-icon {
   cursor: pointer;
   opacity: 0.5;
+  transition: opacity 0.3s;
 }
 
-.like-icon.clicked {
+.like-icon:hover {
   opacity: 1;
 }
 </style>

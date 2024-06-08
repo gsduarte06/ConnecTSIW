@@ -5,6 +5,7 @@ export const usePostsStore = defineStore("posts", {
   state: () => ({
     posts: [],
     comments: [],
+    likes: {},
   }),
   getters: {
     getAllPosts() {
@@ -39,8 +40,14 @@ export const usePostsStore = defineStore("posts", {
         throw error;
       }
     },
-    async likeComment(){
-      
+    async fetchLikebyComment(CommentID, token) {
+      try {
+        const data = await api.get(`comments/${CommentID}/likes`, token);
+        return data.length;
+      } catch (error) {
+        console.error("Error fetching likes:", error);
+        throw error;
+      }
     }
   },
 });
