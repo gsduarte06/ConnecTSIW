@@ -16,6 +16,13 @@ export const usePostsStore = defineStore("posts", {
     async fetchPosts() {
       try {
         const data = await api.get('posts');
+        for(let post of data){
+          const likes = await api.get(`posts/${post.id_post}/likes`)
+          post.likes = likes.length||0;
+          const presence = await api.get(`posts/${post.id_post}/present_users`)
+          post.present_users = presence
+        }
+        console.log(data);
         this.posts = data;
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -25,6 +32,10 @@ export const usePostsStore = defineStore("posts", {
     async fetchCommentbyPost(PostId, token){
       try {
         const data = await api.get(`posts/${PostId}/comments`, token);
+        for(let post of data){
+          const likes = await api.get(`comments/${post.id_comment}/likes`, token);
+          post.likes = likes.length||0;
+        }
         this.comments = data;
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -40,14 +51,17 @@ export const usePostsStore = defineStore("posts", {
         throw error;
       }
     },
-    async fetchLikebyComment(CommentID, token) {
+
+    async createPost(data,token) {
       try {
-        const data = await api.get(`comments/${CommentID}/likes`, token);
-        return data.length;
+        const redata = await api.postForm(`posts`, data ,token);
+        console.log(redata);
+        await this.fetchPosts();
       } catch (error) {
-        console.error("Error fetching likes:", error);
+        console.error("Error in store fetching user:", error);
         throw error;
       }
-    }
+    },
   },
+
 });

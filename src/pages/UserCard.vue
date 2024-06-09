@@ -40,20 +40,21 @@ export default {
   },
   data() {
     return {
-      avatarSrc: "img/anime6.png", // Avatar source, set default image
       positionStore: usePositionStore(),
       userStore: useUserStore(),
       position: "",
+      avatarSrc: this.user.foto || "img/anime6.png",
     };
   },
   async mounted() {
     await this.userStore.fetchBackground(this.userStore.getToken);
     let bg = this.userStore.getBg;
-    if (bg.length == 0) {
+    let bg_current = bg.find((bg) => bg.end_date == null);
+    if (typeof bg_current == "undefined") {
       this.position = "Unemployed";
       return;
     }
-    console.log(bg);
+
     let id_position = bg.find((bg) => bg.end_date == null).id_position;
     await this.positionStore.fetchPositions(this.userStore.getToken);
     let positions = this.positionStore.getPositions;
@@ -64,7 +65,8 @@ export default {
     openFileInput() {
       this.$refs.fileInput.click(); // Trigger file input click
     },
-    handleFileChange(event) {
+    async handleFileChange(event) {
+      console.log(event.target.files);
       const file = event.target.files[0]; // Get the selected file
       if (file) {
         const reader = new FileReader(); // Create a FileReader object
@@ -72,6 +74,11 @@ export default {
           this.avatarSrc = reader.result; // Set the avatar source to the selected image
         };
         reader.readAsDataURL(file); // Read the selected file as a data URL
+
+        let formData = new FormData();
+        formData.append("image", file);
+        console.log(...formData);
+        await this.userStore.updateUserForm(formData);
       }
     },
   },

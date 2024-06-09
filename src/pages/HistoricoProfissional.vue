@@ -3,10 +3,10 @@
     <div class="col-md-8">
       <card>
         <div class="create-job">
-          <h1 class="title">Novo Historico Profissional</h1>
+          <h1 class="title">New background</h1>
           <form @submit.prevent="submitForm" class="job-form">
             <div class="form-group">
-              <label for="jobTitle">Nome da Empresa</label>
+              <label for="jobTitle">Entity Name</label>
               <input
                 type="text"
                 id="jobTitle"
@@ -16,9 +16,9 @@
               />
             </div>
             <div class="form-group">
-              <label for="district">Distrito</label>
+              <label for="district">District</label>
               <select id="district" class="form-control" v-model="selectedDistrict">
-                <option value="" disabled selected>Selecione um distrito</option>
+                <option value="" disabled selected>Select district</option>
                 <option
                   v-for="district in districts"
                   :key="district.id_district"
@@ -30,9 +30,9 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="jobType">Tipo de Cargo</label>
+              <label for="jobType">Position</label>
               <select id="jobType" class="form-control" v-model="selectedOption">
-                <option value="" selected>Selecione um tipo de cargo</option>
+                <option value="" selected>Select Position</option>
                 <option
                   v-for="jobType in jobTypes"
                   :key="jobType.id_position"
@@ -56,7 +56,7 @@
               </div>
             </div>
             <div class="form-group">
-              <label for="jobDescription">Descrição do Cargo</label>
+              <label for="jobDescription">Job Description</label>
               <textarea
                 id="jobDescription"
                 class="form-control"
@@ -67,7 +67,7 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="startDate">Data de Início</label>
+                  <label for="startDate">Begin Date</label>
                   <input
                     type="date"
                     id="startDate"
@@ -79,7 +79,7 @@
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="endDate">Data de Término</label>
+                  <label for="endDate">End Date</label>
                   <input
                     type="date"
                     id="endDate"
@@ -90,30 +90,40 @@
               </div>
             </div>
             <div class="text-right">
-              <button type="submit" class="btn btn-primary">Salvar</button>
+              <button type="submit" class="btn btn-primary" v-if="!edit">Save</button>
             </div>
           </form>
+          <button type="" class="btn btn-primary" v-if="edit" @click="redo">
+            Cancel
+          </button>
+          <button type="" class="btn btn-primary" v-if="edit" @click="update">
+            Save
+          </button>
         </div>
       </card>
     </div>
     <div class="col-md-4">
       <div class="history-cards">
         <card v-for="(job, index) in jobHistory" :key="index">
-          <h3>{{ job.name_company }}</h3>
-          <p>
-            <strong>Distrito:</strong>
-            {{ districts.find((d) => d.id_district == job.id_district).district }}
-          </p>
-          <p>
-            <strong>Tipo de Cargo:</strong>
-            {{ jobTypes.find((d) => d.id_position == job.id_position).position_desc }}
-          </p>
-          <p><strong>Descrição do Cargo:</strong> {{ job.descricao_position }}</p>
-          <p><strong>Data de Início:</strong> {{ job.begin_date }}</p>
-          <p v-if="job.end_date"><strong>Data de Término:</strong> {{ job.end_date }}</p>
-          <button @click="removeJob(job.id_background)" class="delete-btn">
-            <i class="fas fa-trash-alt"></i>
-          </button>
+          <div @click="editBG(job)">
+            <h3>{{ job.name_company }}</h3>
+            <p>
+              <strong>Distrito:</strong>
+              {{ districts.find((d) => d.id_district == job.id_district).district }}
+            </p>
+            <p>
+              <strong>Tipo de Cargo:</strong>
+              {{ jobTypes.find((d) => d.id_position == job.id_position).position_desc }}
+            </p>
+            <p><strong>Descrição do Cargo:</strong> {{ job.descricao_position }}</p>
+            <p><strong>Data de Início:</strong> {{ job.begin_date }}</p>
+            <p v-if="job.end_date">
+              <strong>Data de Término:</strong> {{ job.end_date }}
+            </p>
+            <button @click="removeJob(job.id_background)" class="delete-btn">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
         </card>
       </div>
     </div>
@@ -138,6 +148,8 @@ export default {
       userStore: useUserStore(),
       newOption: "",
       token: null,
+      edit: false,
+      jobId: "",
     };
   },
 
@@ -155,8 +167,57 @@ export default {
     },
   },
   methods: {
+    editBG(job) {
+      this.edit = true;
+      console.log(job);
+      this.startDate = job.begin_date;
+      if (job.end_date != null) this.endDate = job.end_date;
+      this.selectedDistrict = job.id_district;
+      this.selectedOption = job.id_position;
+      this.jobDescription = job.descricao_position;
+      this.jobTitle = job.name_company;
+      this.jobId = job.id_background;
+    },
+    redo() {
+      this.jobTitle = "";
+      this.selectedDistrict = "";
+      this.jobDescription = "";
+      this.selectedOption = "";
+      this.startDate = "";
+      this.endDate = "";
+      this.edit = false;
+    },
+    async update() {
+      const formData = {
+        name_company: this.jobTitle,
+        id_district: this.selectedDistrict,
+        descricao_position: this.jobDescription,
+        id_position: this.selectedOption,
+        begin_date: this.startDate,
+        end_date: this.endDate || null,
+      };
+      console.log(formData);
+
+      const res = await this.userStore.updateBackground(this.jobId, formData, this.token);
+      console.log(res);
+
+      await this.userStore.fetchBackground(this.token);
+
+      if (!res.msg.includes("No updates were made on background with ID")) {
+        let oldxp = await api.get(
+          `users/${this.userStore.userId}/xp`,
+          this.userStore.token
+        );
+
+        const data = {};
+        let addXp = 100;
+        addXp += parseInt(oldxp[0].xp);
+        data.xp = addXp;
+        await this.userStore.updateUser(data);
+      }
+      this.redo();
+    },
     async submitForm() {
-      console.log(this.selectedOption);
       const formData = {
         company: this.jobTitle,
         idDistrict: this.selectedDistrict,
@@ -177,6 +238,17 @@ export default {
       this.startDate = "";
       this.endDate = "";
       await this.userStore.fetchBackground(this.token);
+
+      let oldxp = await api.get(
+        `users/${this.userStore.userId}/xp`,
+        this.userStore.token
+      );
+
+      const data = {};
+      let addXp = 500;
+      addXp += parseInt(oldxp[0].xp);
+      data.xp = addXp;
+      await this.userStore.updateUser(data);
     },
 
     async removeJob(index) {

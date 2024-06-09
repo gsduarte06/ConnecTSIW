@@ -3,16 +3,16 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="card shadow-sm">
-          <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h6 class="title d-inline">
-              User Management
-            </h6>
-            <router-link to="/admin" class="btn  btn-sm">
+          <div
+            class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
+          >
+            <h6 class="title d-inline">User Management</h6>
+            <router-link to="/admin" class="btn btn-sm">
               <i class="fas fa-arrow-left"></i> Return to Admin
             </router-link>
           </div>
           <div class="card-body">
-            <table class="table table-hover">
+            <table class="table">
               <thead class="thead-light">
                 <tr>
                   <th>ID</th>
@@ -23,16 +23,14 @@
               </thead>
               <tbody>
                 <tr v-for="user in users" :key="user.id">
-                  <td>{{ user.id }}</td>
+                  <td>{{ user.id_user }}</td>
                   <td>{{ user.username }}</td>
                   <td>{{ user.email }}</td>
                   <td>
-                    <router-link 
-                      :to="{ name: 'UserDetail', params: { id: user.id }}" 
-                      class="btn btn-info btn-sm mr-2">
-                      <i class="fas fa-info-circle"></i> View
-                    </router-link>
-                    <button class="btn btn-danger btn-sm" @click="deleteUser(user.id)">
+                    <button
+                      class="btn btn-danger btn-sm"
+                      @click="deleteUser(user.id_user)"
+                    >
                       <i class="fas fa-trash-alt"></i> Delete
                     </button>
                   </td>
@@ -47,25 +45,29 @@
 </template>
 
 <script>
+import { useUserStore } from "../store/user";
 export default {
   data() {
     return {
-      users: [
-        { id: 1, username: 'user1', email: 'user1@example.com' },
-        { id: 2, username: 'user2', email: 'user2@example.com' },
-        { id: 3, username: 'user3', email: 'user3@example.com' },
-        // Additional user data...
-      ],
+      userStore: useUserStore(),
     };
   },
   methods: {
-    deleteUser(userId) {
+    async deleteUser(userId) {
       // Logic to delete the user
-      if (confirm('Are you sure you want to delete this user?')) {
-        this.users = this.users.filter(user => user.id !== userId);
-        alert('User deleted successfully!');
+      if (confirm("Are you sure you want to delete this user?")) {
+        await this.userStore.deleteUser(userId);
+        alert("User deleted successfully!");
       }
     },
+  },
+  computed: {
+    users() {
+      return this.userStore.users;
+    },
+  },
+  async mounted() {
+    await this.userStore.fetchAllUsers();
   },
 };
 </script>

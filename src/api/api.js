@@ -56,6 +56,40 @@ export async function patch(endpoint, data, token) {
   }
 }
 
+export async function patchForm(endpoint, data, token) {
+  try {
+    const response = await fetch(`${apiBaseUrl}/${endpoint}`, {
+      method: "PATCH",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+      body: data,
+      
+
+    });
+    return handleResponse(response);
+  } catch (error) {
+    console.error(`Error posting to ${endpoint}:`, error);
+    throw error;
+  }
+}
+
+export async function postForm(endpoint, data, token) {
+  try {
+    const response = await fetch(`${apiBaseUrl}/${endpoint}`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+      body: data,
+    });
+    return handleResponse(response);
+  } catch (error) {
+    console.error(`Error posting to ${endpoint}:`, error);
+    throw error;
+  }
+}
+
 
 
 export async function del(endpoint, token,data) {

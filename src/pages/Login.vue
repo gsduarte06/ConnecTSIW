@@ -57,7 +57,6 @@ export default {
       try {
         await userStore.login({ username: this.user, password: this.password });
         localStorage.setItem("isLoggedIn", true);
-        await userStore.fetchUser();
         this.$router.push("/dashboard");
       } catch (error) {
         console.error("Login failed:", error);

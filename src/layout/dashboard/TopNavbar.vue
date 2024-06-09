@@ -149,6 +149,7 @@ export default {
     },
     logout() {
       localStorage.setItem("isLoggedIn", "false");
+      sessionStorage.clear();
       if (this.$route.name != "dashboard") this.$router.push("/");
       window.location.reload();
     },

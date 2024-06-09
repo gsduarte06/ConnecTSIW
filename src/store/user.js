@@ -3,12 +3,18 @@ import * as api from "../api/api";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
-    userId: null || 4,
-    token: null,
-    user: [],
+    userId: JSON.parse(sessionStorage.getItem("userID"))|| null,
+    token:JSON.parse(sessionStorage.getItem("token")) || null,
+    user:JSON.parse(sessionStorage.getItem("user"))|| [],
     background: [],
     users: {},
   }),
+  async mounted () {
+    console.log(userId);
+    if(userId != null){
+      await this.fetchUser()
+    }
+  },
   getters: {
     getUser() {
       return this.user;
@@ -37,6 +43,18 @@ export const useUserStore = defineStore("user", {
       try {
         const data = await api.get(`users/${this.userId}`);
         this.user = data;
+        sessionStorage.setItem("user", JSON.stringify(data))
+        console.log(this.user);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        throw error;
+      }
+    },
+
+    async fetchAllUsers(){
+      try {
+        const data = await api.get(`users/`);
+        this.users = data;
         console.log(this.user);
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -61,10 +79,31 @@ export const useUserStore = defineStore("user", {
         throw error;
       }
     },
-
+    async updateBackground(BgId,data,token) {
+      try {
+        const redata = await api.patch(`backgrounds/${BgId}`, data,token);
+        console.log(redata);
+        return redata
+      } catch (error) {
+        console.error("Error in store registering:", error);
+        throw error;
+      }
+    },
     async updateUser(data) {
       try {
         const redata = await api.patch(`users/${this.userId}/`, data , this.token);
+        console.log(redata);
+        await this.fetchUser();
+        console.log(this.user);
+      } catch (error) {
+        console.error("Error in store fetching user:", error);
+        throw error;
+      }
+    },
+
+    async updateUserForm(data) {
+      try {
+        const redata = await api.patchForm(`users/${this.userId}/`, data , this.token);
         console.log(redata);
         await this.fetchUser();
         console.log(this.user);
@@ -80,7 +119,9 @@ export const useUserStore = defineStore("user", {
         console.log(data);
         this.userId = data.loggedUserId;
         this.token = data.accessToken;
-        localStorage.setItem('userid', JSON.stringify(data.loggedUserId));
+        sessionStorage.setItem('userID', JSON.stringify(data.loggedUserId));
+        sessionStorage.setItem('token', JSON.stringify(data.accessToken));
+        await this.fetchUser()
       } catch (error) {
         console.error("Error in store logging in:", error);
         throw error;
@@ -91,6 +132,17 @@ export const useUserStore = defineStore("user", {
         const data = await api.post('users', newUser);
       } catch (error) {
         console.error("Error in store registering:", error);
+        throw error;
+      }
+    },
+
+
+    async deleteUser(id) {
+      try {
+        const data = await api.del(`users/${id}`,this.token);
+        await this.fetchAllUsers()
+      } catch (error) {
+        console.error("Error fetching user:", error);
         throw error;
       }
     },

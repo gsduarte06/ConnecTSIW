@@ -19,7 +19,7 @@
           icon="tim-icons icon-single-02"
         />
         <sidebar-link
-          v-if="isLoggedUser"
+          v-if="isAdmin"
           to="/admin"
           name="Admin"
           icon="tim-icons icon-single-02"
@@ -62,10 +62,17 @@ export default {
       if (this.userStore.getToken != null) return true;
       return false;
     },
+    getStatusAdmin() {
+      if (this.userStore.userId == 2) return true;
+      return false;
+    },
   },
   computed: {
     isLoggedUser() {
       return this.getStatus();
+    },
+    isAdmin() {
+      return this.getStatusAdmin();
     },
   },
 };

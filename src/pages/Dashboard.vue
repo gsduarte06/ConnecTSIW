@@ -223,7 +223,6 @@ export default {
       const params = new URLSearchParams({
         district: true,
       });
-      console.log(`users/1/backgrounds?${params.toString()}`);
       let queryResult = await api.get(`users/1/backgrounds?${params.toString()}`);
       console.log(queryResult);
 
