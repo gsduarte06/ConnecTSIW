@@ -17,7 +17,6 @@
             <span class="navbar-toggler-bar bar3"></span>
           </button>
         </div>
-        <a class="title">ConnecTSIW</a>
       </div>
       <button
         class="navbar-toggler"
