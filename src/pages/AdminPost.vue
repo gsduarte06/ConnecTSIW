@@ -33,7 +33,7 @@
                 />
 
                 <label for="date">End Date:</label>
-                <input type="date" class="form-control" id="endDate" v-model="endDate" />
+                <input type="datetime-local" class="form-control" id="endDate" v-model="endDate" />
               </div>
 
               <div class="form-group">
