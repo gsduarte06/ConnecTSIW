@@ -19,8 +19,8 @@
             />
           </div>
         </a>
-        <a href="http://www.creative-tim.com" class="simple-text logo-normal">
-          {{ title }}
+        <a href="" class="simple-text logo-normal">
+          {{title}}
         </a>
       </div>
       <slot> </slot>
@@ -47,7 +47,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: "Creative Tim",
+      default: "ConnecTsiw",
     },
     backgroundColor: {
       type: String,

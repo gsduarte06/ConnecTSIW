@@ -134,6 +134,7 @@ export default {
       }
     },
     openModal(post) {
+      console.log("Abrindo modal para o post:", post);
       this.selectedPost = post;
       this.showModal = true;
     },

@@ -17,7 +17,6 @@
             <span class="navbar-toggler-bar bar3"></span>
           </button>
         </div>
-        <a class="title">ConnecTSIW</a>
       </div>
       <button
         class="navbar-toggler"
@@ -36,7 +35,7 @@
       <collapse-transition>
         <div class="collapse navbar-collapse show" v-show="showMenu">
           <ul class="navbar-nav ml-auto">
-            <base-dropdown v-if="isLoggedIn" tag="li" title-tag="a" class="nav-item">
+            <base-dropdown v-if="isLoggedIn" tag="li" title-tag="a" class="nav-item dropdown-left" menu-classes="dropdown-navbar">
               <a
                 slot="title"
                 class="dropdown-toggle nav-link"
@@ -48,17 +47,17 @@
                 <p class="d-lg-none">New Notifications</p>
               </a>
               <li class="nav-link">
-                <a href="" class="nav-item dropdown-item"
-                  >Mike John responded to your email</a
-                >
+                <a href="" class="nav-item dropdown-item">
+                  Mike John responded to your email
+                </a>
               </li>
               <li class="nav-link">
                 <a href="" class="nav-item dropdown-item">You have 5 more tasks</a>
               </li>
               <li class="nav-link">
-                <a href="" class="nav-item dropdown-item"
-                  >Your friend Michael is in town</a
-                >
+                <a href="" class="nav-item dropdown-item">
+                  Your friend Michael is in town
+                </a>
               </li>
               <li class="nav-link">
                 <a href="" class="nav-item dropdown-item">Another notification</a>
@@ -71,7 +70,7 @@
               <base-dropdown
                 tag="li"
                 title-tag="a"
-                class="nav-item"
+                class="nav-item dropdown-left"
                 menu-classes="dropdown-navbar"
               >
                 <a
@@ -87,9 +86,9 @@
                   <p class="d-lg-none">Log out</p>
                 </a>
                 <li class="nav-link">
-                  <router-link class="nav-item dropdown-item" to="/profile"
-                    >Profile</router-link
-                  >
+                  <router-link class="nav-item dropdown-item" to="/profile">
+                    Profile
+                  </router-link>
                 </li>
                 <li class="nav-link">
                   <a href="#" class="nav-item dropdown-item" @click="logout">Log out</a>
@@ -158,5 +157,8 @@ export default {
 </script>
 
 <style>
-/* Estilos personalizados específicos para este componente */
+.nav-item.dropdown-left .dropdown-menu {
+  right: 0;
+  left: auto;
+}
 </style>
