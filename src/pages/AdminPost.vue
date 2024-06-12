@@ -73,6 +73,7 @@
                   class="form-control-file"
                   id="image"
                   ref="imageInput"
+                  accept="image/png, image/jpg, image/jpeg" 
                   @change="onImageChange"
                 />
                 <button
