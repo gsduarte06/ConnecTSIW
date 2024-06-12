@@ -30,10 +30,7 @@
       <div class="col-lg-6">
         <card type="chart">
           <template slot="header">
-            <h5 class="card-category">{{ $t("dashboard.totalShipments") }}</h5>
-            <h3 class="card-title">
-              <i class="tim-icons icon-bell-55 text-primary"></i> 763,215
-            </h3>
+            <h3 class="card-title">Number of Active Alumini Users By Position</h3>
           </template>
           <div class="chart-area">
             <line-chart
@@ -61,8 +58,8 @@
               style="height: 100%"
               chart-id="blue-bar-chart"
               :chart-data="blueBarChart.chartData"
-              :gradient-stops="blueBarChart.gradientStops"
-              :extra-options="blueBarChart.extraOptions"
+              :gradient-stops="[1, 0.4, 0]"
+              :extra-options="chartConfigs.barChartOptions"
             >
             </bar-chart>
           </div>
@@ -143,16 +140,12 @@ export default {
               pointHoverRadius: 4,
               pointHoverBorderWidth: 15,
               pointRadius: 4,
-              data: [80, 100, 70, 80, 120, 80],
             },
           ],
         },
-        gradientColors: config.colors.primaryGradient,
-        gradientStops: [1, 0.2, 0],
       },
 
       blueBarChart: {
-        extraOptions: chartConfigs.barChartOptions,
         chartData: {
           labels: ["USA", "GER", "AUS", "UK", "RO", "BR"],
           datasets: [
@@ -167,8 +160,6 @@ export default {
             },
           ],
         },
-        gradientColors: config.colors.primaryGradient,
-        gradientStops: [1, 0.4, 0],
       },
     };
   },
@@ -179,7 +170,6 @@ export default {
         district: true,
       });
       let queryResult = await api.get(`users/1/backgrounds?${params.toString()}`);
-      console.log(queryResult);
 
       let districtsBruto = await api.get(`districts`);
       let districts = [];
@@ -206,6 +196,11 @@ export default {
         ],
         labels: districts,
       };
+      let queryClone = Array.from(queryResult);
+      chartConfigs.purpleChartOptions.scales.yAxes[0].ticks.suggestedMin = queryClone[0];
+      queryClone.reverse();
+      chartConfigs.purpleChartOptions.scales.yAxes[0].ticks.suggestedMax =
+        queryClone[0] + 5;
       this.bigLineChart.chartData = chartData;
     },
     async initDataBgPosition() {
@@ -213,8 +208,6 @@ export default {
         positions: true,
       });
       let queryResult = await api.get(`users/1/backgrounds?${params.toString()}`);
-      console.log(queryResult);
-
       let data = [];
       let labels = [];
       for (let result of queryResult) {
@@ -243,17 +236,51 @@ export default {
         labels: labels,
       };
       data.sort();
-
       chartConfigs.greenChartOptions.scales.yAxes[0].ticks.suggestedMin = data[0];
       data.reverse();
       chartConfigs.greenChartOptions.scales.yAxes[0].ticks.suggestedMax = data[0] + 5;
 
       this.purpleLineChart.chartData = chartData;
     },
+    async initDataBgNewUsers() {
+      const params = new URLSearchParams({
+        numYear: 1,
+      });
+      let queryResult = await api.get(`users/?${params.toString()}`);
+
+      let data = [];
+      let labels = [];
+      for (let result of queryResult) {
+        data.push(result.case_count);
+        labels.push(result.month);
+      }
+      let chartData = {
+        datasets: [
+          {
+            label: "Countries",
+            fill: true,
+            borderColor: config.colors.info,
+            borderWidth: 2,
+            borderDash: [],
+            borderDashOffset: 0.0,
+            data: data,
+          },
+        ],
+        labels: labels,
+      };
+
+      this.blueBarChart.chartData = chartData;
+      let queryClone = Array.from(data);
+      chartConfigs.purpleChartOptions.scales.yAxes[0].ticks.suggestedMin = queryClone[0];
+      queryClone.reverse();
+      chartConfigs.purpleChartOptions.scales.yAxes[0].ticks.suggestedMax =
+        queryClone[0] + 5;
+    },
   },
   mounted() {
     this.initDataBgDistrict();
     this.initDataBgPosition();
+    this.initDataBgNewUsers();
     this.i18n = this.$i18n;
   },
 };
