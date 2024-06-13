@@ -35,7 +35,13 @@
       <collapse-transition>
         <div class="collapse navbar-collapse show" v-show="showMenu">
           <ul class="navbar-nav ml-auto">
-            <base-dropdown v-if="isLoggedIn" tag="li" title-tag="a" class="nav-item dropdown-left" menu-classes="dropdown-navbar">
+            <base-dropdown
+              v-if="isLoggedIn"
+              tag="li"
+              title-tag="a"
+              class="nav-item dropdown-left"
+              menu-classes="dropdown-navbar"
+            >
               <a
                 slot="title"
                 class="dropdown-toggle nav-link"
@@ -46,24 +52,15 @@
                 <i class="tim-icons icon-bell-55"></i>
                 <p class="d-lg-none">New Notifications</p>
               </a>
-              <li class="nav-link">
-                <a href="" class="nav-item dropdown-item">
-                  Mike John responded to your email
-                </a>
-              </li>
-              <li class="nav-link">
-                <a href="" class="nav-item dropdown-item">You have 5 more tasks</a>
-              </li>
-              <li class="nav-link">
-                <a href="" class="nav-item dropdown-item">
-                  Your friend Michael is in town
-                </a>
-              </li>
-              <li class="nav-link">
-                <a href="" class="nav-item dropdown-item">Another notification</a>
-              </li>
-              <li class="nav-link">
-                <a href="" class="nav-item dropdown-item">Another one</a>
+
+              <li class="nav-link" v-for="not in notifications" :key="not.id_post">
+                <router-link
+                  :to="`/post/${not.id_post}`"
+                  class="nav-item dropdown-item"
+                  v-if="not.post"
+                  >{{ not.msg }}</router-link
+                >
+                <p class="nav-item dropdown-item" v-else>{{ not.msg }}</p>
               </li>
             </base-dropdown>
             <div v-if="isLoggedIn">
@@ -109,6 +106,7 @@
 import { CollapseTransition } from "vue2-transitions";
 import { RouterLink } from "vue-router";
 import { useUserStore } from "../../store/user";
+import { usePostsStore } from "../../store/posts";
 export default {
   components: {
     CollapseTransition,
@@ -128,7 +126,28 @@ export default {
       activeNotifications: false,
       showMenu: false,
       userStore: useUserStore(),
+      postStore: usePostsStore(),
+      notifications: [],
     };
+  },
+  async mounted() {
+    await usePostsStore().fetchPosts();
+    let userId = useUserStore().userId;
+    const posts = usePostsStore().getAllPosts;
+    let newPosts = posts.filter(
+      (post) =>
+        post.date_post.toString().split("-")[1] === "0" + (new Date().getMonth() + 1) ||
+        post.date_post.toString().split("-")[0] === new Date().getFullYear()
+    );
+
+    for (let post of newPosts) {
+      this.notifications.push({
+        msg: "You got a new Post, Click Here",
+        post: true,
+        id_post: post.id_post,
+      });
+    }
+    console.log(newPosts);
   },
   methods: {
     toggleNotificationDropDown() {

@@ -48,10 +48,7 @@
       <div class="col-lg-6">
         <card type="chart">
           <template slot="header">
-            <h5 class="card-category">{{ $t("dashboard.dailySales") }}</h5>
-            <h3 class="card-title">
-              <i class="tim-icons icon-delivery-fast text-info"></i> 3,500€
-            </h3>
+            <h3 class="card-title">Utilizadores novos por mês no ultimo ano</h3>
           </template>
           <div class="chart-area">
             <bar-chart
@@ -150,7 +147,7 @@ export default {
           labels: ["USA", "GER", "AUS", "UK", "RO", "BR"],
           datasets: [
             {
-              label: "Countries",
+              label: "Data",
               fill: true,
               borderColor: config.colors.info,
               borderWidth: 2,
@@ -257,7 +254,7 @@ export default {
       let chartData = {
         datasets: [
           {
-            label: "Countries",
+            label: "Data",
             fill: true,
             borderColor: config.colors.info,
             borderWidth: 2,
