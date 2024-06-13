@@ -6,9 +6,9 @@
           <div class="mb-8">
             <p class="title mb-0">{{ row.title }}</p>
             <p></p>
-            <p class="text-muted">Inicio: {{ row.date_inicio }}</p>
+            <p class="text-muted">Start date: {{ row.date_inicio }}</p>
             <p class="text-muted" v-if="row.date_fim">
-              Fim: {{ row.date_fim.replace("T", " ").replace(".000Z", "") }}
+              End Date: {{ row.date_fim.replace("T", " ").replace(".000Z", "") }}
             </p>
           </div>
           <div class="text-center mb-3" v-if="row.image">
@@ -46,16 +46,20 @@
 
     <!-- Modal -->
     <div class="modal" :class="{ 'is-active': showModal }">
-      <div class="modal-background"></div>
+      <div class="modal-background" @click="closeModal"></div>
       <div class="modal-content">
         <div class="box">
-          <p>Data de Início: {{ selectedPost.date_inicio }}</p>
+          <p v-if="selectedPost.date_inicio">Starting Date: {{ selectedPost.date_inicio }}</p>
+          <p v-if="selectedPost.date_fim">Ending Date: {{ selectedPost.date_fim.replace("T", " ").replace(".000Z", "") }}</p>
           <div class="text-right">
             <button type="button" class="btn btn-secondary mr-1" @click="closeModal">
-              Fechar
+              Close
             </button>
-            <button type="button" class="btn btn-primary" @click="participate">
-              Participar
+            <button v-if="!isParticipating" type="button" class="btn btn-primary" @click="participate">
+              Participate
+            </button>
+            <button v-else type="button" class="btn btn-danger" @click="participate">
+              Cancel Participation
             </button>
           </div>
         </div>
@@ -83,7 +87,9 @@ export default {
     return {
       showModal: false,
       selectedPost: {},
+      users: [],
       userStore: useUserStore(),
+      isParticipating: false, // Nova variável
     };
   },
   computed: {
@@ -99,6 +105,7 @@ export default {
         date_inicio: item.begin_date,
         date_fim: item.end_date,
         likes: item.likes,
+        present_users: item.usersP,
       }));
     },
     isLoggedUser() {
@@ -107,8 +114,7 @@ export default {
   },
   methods: {
     getStatus() {
-      if (this.userStore.getToken != null) return false;
-      return true;
+      return this.userStore.getToken == null;
     },
     async addLike(id) {
       const LikeData = {
@@ -133,16 +139,49 @@ export default {
         throw error;
       }
     },
+    async fetchUsers(post) {
+      try {
+        const userPromises = post.present_users.map(async (user) => {
+          const userDetails = await api.get(`users/${user.id_user}`, this.userStore.token);
+          return userDetails.data;
+        });
+        this.users = await Promise.all(userPromises);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    },
     openModal(post) {
-      console.log("Abrindo modal para o post:", post);
       this.selectedPost = post;
+      this.checkUserParticipation(this.selectedPost.id);
       this.showModal = true;
     },
     closeModal() {
       this.showModal = false;
     },
-    participate() {
-      console.log("Participar");
+    async checkUserParticipation(postId) {
+      try {
+        const response = await api.get(`posts/${postId}/present_users`, this.userStore.token);
+        const userId = this.userStore.userId;
+        this.isParticipating = response.some(item => item.id_user === userId);
+      } catch (error) {
+        console.error("Error checking user participation:", error);
+      }
+    },
+    async participate() {
+      const PartData = {
+        idUser: this.userStore.userId,
+        idPost: this.selectedPost.id,
+      };
+      try {
+        await api.post(`posts/${this.selectedPost.id}/present_users`, PartData, this.userStore.token);
+        this.closeModal()
+      } catch (error) {
+        if ((error.msg = "like is already in the database")) {
+          await api.del(`posts/${this.selectedPost.id}/present_users`, this.userStore.token, PartData);
+          this.closeModal()
+        }
+      }
+      this.fetchPosts();
     },
   },
   async created() {
@@ -150,4 +189,46 @@ export default {
   },
 };
 </script>
-<style></style>
+
+<style scoped>
+.modal.is-active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-background {
+  background-color: rgba(32, 28, 44, 0.8);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.modal-content {
+  background: #201c2c;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.box {
+  padding: 1rem;
+}
+
+.text-right {
+  text-align: right;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  padding: 0.5rem 0;
+}
+</style>
