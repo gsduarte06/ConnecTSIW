@@ -37,6 +37,22 @@
       </div>
     </div>
     <div class="row">
+      <div class="form-group">
+        <input
+          type="file"
+          class="form-control-file"
+          id="image"
+          ref="imageInput"
+          accept="application/pdf"
+          @change="onImageChange"
+        />
+        <button type="button" class="btn btn-secondary mt-2" @click="onImageChange">
+          Add CV
+        </button>
+        <span v-if="fileName">{{ fileName }}</span>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-md-6 pr-md-1">
         <div class="form-group">
           <label>Experiência</label>
@@ -86,6 +102,8 @@ export default {
       username: "",
       nif: "",
       about: "",
+      cv: null,
+      fileName: "",
     };
   },
   mounted() {
@@ -99,40 +117,55 @@ export default {
     viewProfessionalHistory() {
       this.$router.push("/professional-history");
     },
+    onImageChange(event) {
+      console.log(event.target.files);
+      const file = event.target.files[0]; // Get the selected file
+      if (file) {
+        const reader = new FileReader(); // Create a FileReader object
+        reader.onload = () => {
+          this.imagePresent = reader.result; // Set the avatar source to the selected image
+        };
+        reader.readAsDataURL(file); // Read the selected file as a data URL
 
+        this.cv = file;
+        this.fileName = file.name;
+      }
+    },
     async updateInfo() {
       let addXp = 0;
-      const data = {};
+      let formData = new FormData();
       if (this.validator(this.firstName, this.user.first_name)) {
-        data.first_name = this.firstName;
+        formData.append("first_name", this.firstName);
         addXp += 100;
       }
       if (this.validator(this.lastName, this.user.last_name)) {
-        data.last_name = this.lastName;
+        formData.append("last_name", this.lastName);
         addXp += 100;
       }
       if (this.validator(this.nif, this.user.nif)) {
-        data.nif = this.nif;
+        formData.append("nif", this.nif);
         addXp += 100;
       }
       if (this.validator(this.about, this.user.about)) {
-        data.about = this.about;
+        formData.append("about", this.about);
         addXp += 100;
       }
       if (this.validator(this.username, this.user.username)) {
-        data.username = this.username;
+        formData.append("username", this.username);
         addXp += 100;
       }
-
+      if (this.cv != null) {
+        formData.append("pdf", this.cv);
+      }
       let oldxp = await api.get(
         `users/${this.userStore.userId}/xp`,
         this.userStore.token
       );
       console.log(oldxp[0].xp);
       addXp += parseInt(oldxp[0].xp);
-      data.xp = addXp;
-      console.log(data);
-      await this.userStore.updateUser(data);
+      formData.append("xp", addXp);
+      console.log(formData);
+      await this.userStore.updateUserForm(formData);
     },
 
     validator(input, compare) {
