@@ -60,7 +60,12 @@ export default {
         this.$router.push("/dashboard");
       } catch (error) {
         console.error("Login failed:", error);
-        alert("Login failed: " + error.message);
+
+        if (error.message.toString().includes("not found"))
+          alert("Login failed: User not found");
+
+        if (error.message.toString().includes("Invalid"))
+          alert("Login failed: Invalid Credentials");
       }
     },
   },

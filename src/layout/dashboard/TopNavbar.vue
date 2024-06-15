@@ -77,7 +77,7 @@
                   aria-expanded="true"
                 >
                   <div class="photo">
-                    <img src="img/anime3.png" />
+                    <img :src="profileImg" />
                   </div>
                   <b class="caret d-none d-lg-block d-xl-block"></b>
                   <p class="d-lg-none">Log out</p>
@@ -128,26 +128,30 @@ export default {
       userStore: useUserStore(),
       postStore: usePostsStore(),
       notifications: [],
+      profileImg: "img/anime6.png",
     };
   },
   async mounted() {
-    await usePostsStore().fetchPosts();
-    let userId = useUserStore().userId;
-    const posts = usePostsStore().getAllPosts;
-    let newPosts = posts.filter(
-      (post) =>
-        post.date_post.toString().split("-")[1] === "0" + (new Date().getMonth() + 1) ||
-        post.date_post.toString().split("-")[0] === new Date().getFullYear()
-    );
+    if (this.isLoggedIn) {
+      await usePostsStore().fetchPosts();
+      let userId = useUserStore().userId;
+      const posts = usePostsStore().getAllPosts;
+      let newPosts = posts.filter(
+        (post) =>
+          post.date_post.toString().split("-")[1] === "0" + (new Date().getMonth() + 1) ||
+          post.date_post.toString().split("-")[0] === new Date().getFullYear()
+      );
 
-    for (let post of newPosts) {
-      this.notifications.push({
-        msg: "You got a new Post, Click Here",
-        post: true,
-        id_post: post.id_post,
-      });
+      for (let post of newPosts) {
+        this.notifications.push({
+          msg: "You got a new Post, Click Here",
+          post: true,
+          id_post: post.id_post,
+        });
+      }
+      console.log(newPosts);
+      this.profileImg = this.userStore.user.foto || "img/anime6.png";
     }
-    console.log(newPosts);
   },
   methods: {
     toggleNotificationDropDown() {
