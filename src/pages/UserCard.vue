@@ -25,7 +25,13 @@
     <p class="card-description">
       {{ user.about }}
     </p>
-    <a class="btn btn-primary" :href="cv" target="_blank" v-if="cv">ViewCV</a>
+    <a
+      class="btn btn-primary d-flex justify-content-center"
+      :href="cv"
+      target="_blank"
+      v-if="cv"
+      >ViewCV</a
+    >
   </card>
 </template>
 

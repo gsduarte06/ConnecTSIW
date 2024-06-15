@@ -77,6 +77,7 @@
         >
       </div>
       <div class="col-md-6 pl-md-1 d-flex justify-content-end align-items-center">
+        <base-button type="secundary" fill @click="clearForm">Cancel</base-button>
         <base-button type="primary" fill @click="updateInfo">Save</base-button>
       </div>
     </div>
@@ -107,13 +108,17 @@ export default {
     };
   },
   mounted() {
-    this.firstName = this.userStore.getUser.first_name || "";
-    this.lastName = this.userStore.getUser.last_name || "";
-    this.nif = this.userStore.getUser.nif || "";
-    this.username = this.userStore.getUser.username || "";
-    this.about = this.userStore.getUser.about || "";
+    this.clearForm();
   },
   methods: {
+    clearForm() {
+      this.firstName = this.userStore.getUser.first_name || "";
+      this.lastName = this.userStore.getUser.last_name || "";
+      this.nif = this.userStore.getUser.nif || "";
+      this.username = this.userStore.getUser.username || "";
+      this.about = this.userStore.getUser.about || "";
+      this.filename = "";
+    },
     viewProfessionalHistory() {
       this.$router.push("/professional-history");
     },
