@@ -11,7 +11,7 @@
               <p class="title mb-0">{{ post.content }}</p>
               <p class="text-muted">{{ post.date_post }}</p>
             </div>
-            <div class="text-center mb-3">
+            <div class="text-center mb-3" v-if="post.image">
               <img
                 :src="post.image"
                 alt="Image"

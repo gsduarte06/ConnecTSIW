@@ -48,7 +48,9 @@
       <div class="col-lg-6">
         <card type="chart">
           <template slot="header">
-            <h3 class="card-title">Utilizadores novos por mês no ultimo ano</h3>
+            <h3 class="card-title">
+              New users by month on the last year (starting today)
+            </h3>
           </template>
           <div class="chart-area">
             <bar-chart
@@ -153,7 +155,7 @@ export default {
               borderWidth: 2,
               borderDash: [],
               borderDashOffset: 0.0,
-              data: [53, 20, 10, 80, 100, 45],
+              data: [],
             },
           ],
         },

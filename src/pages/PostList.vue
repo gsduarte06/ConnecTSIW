@@ -49,13 +49,23 @@
       <div class="modal-background" @click="closeModal"></div>
       <div class="modal-content">
         <div class="box">
-          <p v-if="selectedPost.date_inicio">Starting Date: {{ selectedPost.date_inicio }}</p>
-          <p v-if="selectedPost.date_fim">Ending Date: {{ selectedPost.date_fim.replace("T", " ").replace(".000Z", "") }}</p>
+          <p v-if="selectedPost.date_inicio">
+            Starting Date: {{ selectedPost.date_inicio }}
+          </p>
+          <p v-if="selectedPost.date_fim">
+            Ending Date:
+            {{ selectedPost.date_fim.replace("T", " ").replace(".000Z", "") }}
+          </p>
           <div class="text-right">
             <button type="button" class="btn btn-secondary mr-1" @click="closeModal">
               Close
             </button>
-            <button v-if="!isParticipating" type="button" class="btn btn-primary" @click="participate">
+            <button
+              v-if="!isParticipating"
+              type="button"
+              class="btn btn-primary"
+              @click="participate"
+            >
               Participate
             </button>
             <button v-else type="button" class="btn btn-danger" @click="participate">
@@ -142,7 +152,10 @@ export default {
     async fetchUsers(post) {
       try {
         const userPromises = post.present_users.map(async (user) => {
-          const userDetails = await api.get(`users/${user.id_user}`, this.userStore.token);
+          const userDetails = await api.get(
+            `users/${user.id_user}`,
+            this.userStore.token
+          );
           return userDetails.data;
         });
         this.users = await Promise.all(userPromises);
@@ -160,9 +173,12 @@ export default {
     },
     async checkUserParticipation(postId) {
       try {
-        const response = await api.get(`posts/${postId}/present_users`, this.userStore.token);
+        const response = await api.get(
+          `posts/${postId}/present_users`,
+          this.userStore.token
+        );
         const userId = this.userStore.userId;
-        this.isParticipating = response.some(item => item.id_user === userId);
+        this.isParticipating = response.some((item) => item.id_user === userId);
       } catch (error) {
         console.error("Error checking user participation:", error);
       }
@@ -173,15 +189,23 @@ export default {
         idPost: this.selectedPost.id,
       };
       try {
-        await api.post(`posts/${this.selectedPost.id}/present_users`, PartData, this.userStore.token);
-        this.closeModal()
+        await api.post(
+          `posts/${this.selectedPost.id}/present_users`,
+          PartData,
+          this.userStore.token
+        );
+        this.closeModal();
       } catch (error) {
         if ((error.msg = "like is already in the database")) {
-          await api.del(`posts/${this.selectedPost.id}/present_users`, this.userStore.token, PartData);
-          this.closeModal()
+          await api.del(
+            `posts/${this.selectedPost.id}/present_users`,
+            this.userStore.token,
+            PartData
+          );
+          this.closeModal();
         }
       }
-      this.fetchPosts();
+      await this.fetchPosts();
     },
   },
   async created() {

@@ -57,10 +57,13 @@
                 <td>{{ participant.id_user }}</td>
                 <td>{{ participant.username }}</td>
                 <td>
-                  <router-link
-                    :to="'/cv/' + participant.cvId"
+                  <a
                     class="btn btn-danger btn-sm"
-                    ><i class="fas fa-file-alt"></i> View CV</router-link
+                    :href="participant.CV"
+                    target="_blank"
+                    v-if="participant.CV"
+                  >
+                    <i class="fas fa-file-alt"></i> View CV</a
                   >
                 </td>
               </tr>
@@ -134,9 +137,10 @@ export default {
     },
     async openParticipantsModal(post) {
       for (let presence of post.present_users) {
-        console.log(presence);
         let name = await api.get(`users/${presence.id_user}`);
+        console.log(name);
         presence.username = name.username;
+        presence.CV = name.CV;
       }
       this.selectedPost = post.present_users;
       console.log(post.present_users);
