@@ -84,7 +84,7 @@
                 <button
                   type="button"
                   class="btn btn-secondary mt-2"
-                  @click="triggerImageUpload"
+                  @click="onImageChange"
                 >
                   Add Image
                 </button>
@@ -149,13 +149,20 @@ export default {
     async createPost() {
       const convertDate = (date) => date.split("/").reverse().join("/");
       console.log(convertDate(this.beginDate));
+
+      console.log(convertDate(this.endDate).toString().replace("T", " ") + ":00");
       let formData = new FormData();
       formData.append("image", this.image);
       formData.append("content", this.content);
       formData.append("idType", this.selectedType);
       formData.append("district", this.selectedDistrict);
       formData.append("beginDate", convertDate(this.beginDate));
-      if (this.endDate != "") formData.append("endDate", convertDate(this.endDate));
+      if (this.endDate != "")
+        formData.append(
+          "endDate",
+          convertDate(this.endDate).toString().replace("T", " ") + ":00"
+        );
+
       console.log(...formData);
       await this.postsStore.createPost(formData, this.userStore.token);
 
