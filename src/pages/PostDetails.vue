@@ -11,7 +11,7 @@
               <p class="title mb-0">{{ post.content }}</p>
               <p class="text-muted">{{ post.date_post }}</p>
             </div>
-            <div class="text-center mb-3">
+            <div class="text-center mb-3" v-if="post.image">
               <img
                 :src="post.image"
                 alt="Image"
@@ -117,18 +117,20 @@ export default {
       return this.users[userId]?.username || this.userStore.user.username;
     },
     async addLike(id_comment) {
-      const LikeData = {
-        idUser: this.userStore.userId,
-        idComment: id_comment,
-      };
-      try {
-        await api.post(`comments/${id_comment}/likes`, LikeData, this.userStore.token);
-      } catch (error) {
-        if ((error.msg = "like is already in the database")) {
-          await api.del(`comments/${id_comment}/likes`, this.userStore.token, LikeData);
+      if (this.userStore.userId != null) {
+        const LikeData = {
+          idUser: this.userStore.userId,
+          idComment: id_comment,
+        };
+        try {
+          await api.post(`comments/${id_comment}/likes`, LikeData, this.userStore.token);
+        } catch (error) {
+          if ((error.msg = "like is already in the database")) {
+            await api.del(`comments/${id_comment}/likes`, this.userStore.token, LikeData);
+          }
         }
+        this.update();
       }
-      this.update();
     },
     async deleteComment(id_comment) {
       try {

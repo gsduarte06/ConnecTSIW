@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { useUserStore } from "../store/user"; 
+import { useUserStore } from "../store/user";
 
 export default {
   data() {
@@ -88,12 +88,13 @@ export default {
           nif: "",
         });
         await userStore.login({ username: this.newUser, password: this.newPassword });
-        await userStore.fetchUser()
+        await userStore.fetchUser();
         localStorage.setItem("isLoggedIn", true);
         this.$router.push("/dashboard");
       } catch (error) {
         console.error("Registration failed:", error);
-        alert("Registration failed: " + error.message);
+        if (error.message.toString().includes("already in the database"))
+          alert("Login failed: User already as an account");
       }
     },
   },

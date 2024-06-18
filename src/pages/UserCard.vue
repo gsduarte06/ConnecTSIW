@@ -25,6 +25,13 @@
     <p class="card-description">
       {{ user.about }}
     </p>
+    <a
+      class="btn btn-primary d-flex justify-content-center"
+      :href="cv"
+      target="_blank"
+      v-if="cv"
+      >ViewCV</a
+    >
   </card>
 </template>
 
@@ -60,7 +67,11 @@ export default {
     let positions = this.positionStore.getPositions;
     this.position = positions.find((pos) => pos.id_position == id_position).position_desc;
   },
-
+  computed: {
+    cv() {
+      return this.user.CV || null;
+    },
+  },
   methods: {
     openFileInput() {
       this.$refs.fileInput.click(); // Trigger file input click

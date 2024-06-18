@@ -6,6 +6,7 @@ export const usePostsStore = defineStore("posts", {
     posts: [],
     comments: [],
     likes: {},
+    present_users:[,]
   }),
   getters: {
     getAllPosts() {

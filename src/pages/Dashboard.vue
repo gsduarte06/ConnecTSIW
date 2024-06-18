@@ -27,33 +27,29 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-4">
+      <div class="col-lg-6">
         <card type="chart">
           <template slot="header">
-            <h5 class="card-category">{{ $t("dashboard.totalShipments") }}</h5>
-            <h3 class="card-title">
-              <i class="tim-icons icon-bell-55 text-primary"></i> 763,215
-            </h3>
+            <h3 class="card-title">Number of Active Alumini Users By Position</h3>
           </template>
           <div class="chart-area">
             <line-chart
               style="height: 100%"
               chart-id="purple-line-chart"
               :chart-data="purpleLineChart.chartData"
-              :gradient-colors="purpleLineChart.gradientColors"
-              :gradient-stops="purpleLineChart.gradientStops"
-              :extra-options="purpleLineChart.extraOptions"
+              :gradient-colors="config.colors.primaryGradient"
+              :gradient-stops="[1, 0.2, 0]"
+              :extra-options="chartConfigs.greenChartOptions"
             >
             </line-chart>
           </div>
         </card>
       </div>
-      <div class="col-lg-4">
+      <div class="col-lg-6">
         <card type="chart">
           <template slot="header">
-            <h5 class="card-category">{{ $t("dashboard.dailySales") }}</h5>
             <h3 class="card-title">
-              <i class="tim-icons icon-delivery-fast text-info"></i> 3,500€
+              New users by month on the last year (starting today)
             </h3>
           </template>
           <div class="chart-area">
@@ -61,30 +57,10 @@
               style="height: 100%"
               chart-id="blue-bar-chart"
               :chart-data="blueBarChart.chartData"
-              :gradient-stops="blueBarChart.gradientStops"
-              :extra-options="blueBarChart.extraOptions"
+              :gradient-stops="[1, 0.4, 0]"
+              :extra-options="chartConfigs.barChartOptions"
             >
             </bar-chart>
-          </div>
-        </card>
-      </div>
-      <div class="col-lg-4">
-        <card type="chart">
-          <template slot="header">
-            <h5 class="card-category">{{ $t("dashboard.completedTasks") }}</h5>
-            <h3 class="card-title">
-              <i class="tim-icons icon-send text-success"></i> 12,100K
-            </h3>
-          </template>
-          <div class="chart-area">
-            <line-chart
-              style="height: 100%"
-              chart-id="green-line-chart"
-              :chart-data="greenLineChart.chartData"
-              :gradient-stops="greenLineChart.gradientStops"
-              :extra-options="greenLineChart.extraOptions"
-            >
-            </line-chart>
           </div>
         </card>
       </div>
@@ -110,6 +86,11 @@ import config from "@/config";
 
 import * as api from "../api/api";
 
+function getRandomItems(arr, numItems) {
+  let shuffled = arr.sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, numItems);
+}
+
 export default {
   components: {
     LineChart,
@@ -118,6 +99,8 @@ export default {
   },
   data() {
     return {
+      config: config,
+      chartConfigs: chartConfigs,
       chartDataUsers: [],
       bigLineChart: {
         chartData: {
@@ -139,7 +122,6 @@ export default {
         },
       },
       purpleLineChart: {
-        extraOptions: chartConfigs.purpleChartOptions,
         chartData: {
           labels: ["JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
           datasets: [
@@ -157,74 +139,36 @@ export default {
               pointHoverRadius: 4,
               pointHoverBorderWidth: 15,
               pointRadius: 4,
-              data: [80, 100, 70, 80, 120, 80],
             },
           ],
         },
-        gradientColors: config.colors.primaryGradient,
-        gradientStops: [1, 0.2, 0],
       },
-      greenLineChart: {
-        extraOptions: chartConfigs.greenChartOptions,
-        chartData: {
-          labels: ["JUL", "AUG", "SEP", "OCT", "NOV"],
-          datasets: [
-            {
-              label: "My First dataset",
-              fill: true,
-              borderColor: config.colors.danger,
-              borderWidth: 2,
-              borderDash: [],
-              borderDashOffset: 0.0,
-              pointBackgroundColor: config.colors.danger,
-              pointBorderColor: "rgba(255,255,255,0)",
-              pointHoverBackgroundColor: config.colors.danger,
-              pointBorderWidth: 20,
-              pointHoverRadius: 4,
-              pointHoverBorderWidth: 15,
-              pointRadius: 4,
-              data: [90, 27, 60, 12, 80],
-            },
-          ],
-        },
-        gradientColors: [
-          "rgba(66,134,121,0.15)",
-          "rgba(66,134,121,0.0)",
-          "rgba(66,134,121,0)",
-        ],
-        gradientStops: [1, 0.4, 0],
-      },
+
       blueBarChart: {
-        extraOptions: chartConfigs.barChartOptions,
         chartData: {
           labels: ["USA", "GER", "AUS", "UK", "RO", "BR"],
           datasets: [
             {
-              label: "Countries",
+              label: "Data",
               fill: true,
               borderColor: config.colors.info,
               borderWidth: 2,
               borderDash: [],
               borderDashOffset: 0.0,
-              data: [53, 20, 10, 80, 100, 45],
+              data: [],
             },
           ],
         },
-        gradientColors: config.colors.primaryGradient,
-        gradientStops: [1, 0.4, 0],
       },
-      config: config,
-      chartConfigs: chartConfigs,
     };
   },
   computed: {},
   methods: {
-    async initData() {
+    async initDataBgDistrict() {
       const params = new URLSearchParams({
         district: true,
       });
       let queryResult = await api.get(`users/1/backgrounds?${params.toString()}`);
-      console.log(queryResult);
 
       let districtsBruto = await api.get(`districts`);
       let districts = [];
@@ -251,11 +195,91 @@ export default {
         ],
         labels: districts,
       };
+      let queryClone = Array.from(queryResult);
+      chartConfigs.purpleChartOptions.scales.yAxes[0].ticks.suggestedMin = queryClone[0];
+      queryClone.reverse();
+      chartConfigs.purpleChartOptions.scales.yAxes[0].ticks.suggestedMax =
+        queryClone[0] + 5;
       this.bigLineChart.chartData = chartData;
+    },
+    async initDataBgPosition() {
+      const params = new URLSearchParams({
+        positions: true,
+      });
+      let queryResult = await api.get(`users/1/backgrounds?${params.toString()}`);
+      let data = [];
+      let labels = [];
+      for (let result of queryResult) {
+        data.push(result.count);
+        labels.push(result.namePos);
+      }
+      let chartData = {
+        datasets: [
+          {
+            label: "Data",
+            fill: true,
+            borderColor: config.colors.primary,
+            borderWidth: 2,
+            borderDash: [],
+            borderDashOffset: 0.0,
+            pointBackgroundColor: config.colors.primary,
+            pointBorderColor: "rgba(255,255,255,0)",
+            pointHoverBackgroundColor: config.colors.primary,
+            pointBorderWidth: 20,
+            pointHoverRadius: 4,
+            pointHoverBorderWidth: 15,
+            pointRadius: 4,
+            data: data,
+          },
+        ],
+        labels: labels,
+      };
+      data.sort();
+      chartConfigs.greenChartOptions.scales.yAxes[0].ticks.suggestedMin = data[0];
+      data.reverse();
+      chartConfigs.greenChartOptions.scales.yAxes[0].ticks.suggestedMax = data[0] + 5;
+
+      this.purpleLineChart.chartData = chartData;
+    },
+    async initDataBgNewUsers() {
+      const params = new URLSearchParams({
+        numYear: 1,
+      });
+      let queryResult = await api.get(`users/?${params.toString()}`);
+
+      let data = [];
+      let labels = [];
+      for (let result of queryResult) {
+        data.push(result.case_count);
+        labels.push(result.month);
+      }
+      let chartData = {
+        datasets: [
+          {
+            label: "Data",
+            fill: true,
+            borderColor: config.colors.info,
+            borderWidth: 2,
+            borderDash: [],
+            borderDashOffset: 0.0,
+            data: data,
+          },
+        ],
+        labels: labels,
+      };
+
+      this.blueBarChart.chartData = chartData;
+      let queryClone = Array.from(data);
+      chartConfigs.purpleChartOptions.scales.yAxes[0].ticks.suggestedMin = queryClone[0];
+      queryClone.reverse();
+      chartConfigs.purpleChartOptions.scales.yAxes[0].ticks.suggestedMax =
+        queryClone[0] + 5;
     },
   },
   mounted() {
-    this.initData();
+    this.initDataBgDistrict();
+    this.initDataBgPosition();
+    this.initDataBgNewUsers();
     this.i18n = this.$i18n;
   },
 };
