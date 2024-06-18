@@ -4,7 +4,11 @@
       <template slot-scope="{ row }">
         <td>
           <div class="mb-8">
-            <p class="title mb-0">{{ row.title }}</p>
+            <div class="row justify-content-between">
+              <p class="title">{{ row.title }}</p>
+              <span class="like-icon" @click="deletePost(row.id)"> 🗑️ </span>
+            </div>
+
             <p class="text-muted"></p>
             <p class="text-muted">Inicio: {{ row.date_inicio }}</p>
             <p class="text-muted" v-if="row.date_fim">
@@ -92,6 +96,7 @@
 <script>
 import { BaseTable } from "@/components";
 import { usePostsStore } from "../store/posts";
+import { useUserStore } from "../store/user";
 import * as api from "../api/api";
 
 export default {
@@ -102,6 +107,7 @@ export default {
     return {
       showModal: false,
       selectedPost: {},
+      userStore: useUserStore(),
     };
   },
   async created() {
@@ -133,6 +139,15 @@ export default {
       } catch (error) {
         console.error("Error fetching posts:", error);
         throw error;
+      }
+    },
+    async deletePost(id) {
+      try {
+        console.log(id);
+        await api.del(`posts/${id}`, this.userStore.token);
+        this.fetchPosts();
+      } catch (error) {
+        console.error("Error submitting comment:", error);
       }
     },
     async openParticipantsModal(post) {
@@ -202,5 +217,14 @@ export default {
 .btn-sm {
   padding: 5px 10px;
   font-size: 12px;
+}
+.like-icon {
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+
+.like-icon:hover {
+  opacity: 1;
 }
 </style>

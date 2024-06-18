@@ -163,7 +163,7 @@ export default {
           convertDate(this.endDate).toString().replace("T", " ") + ":00"
         );
 
-      console.log(...formData);
+      console.log(formData);
       await this.postsStore.createPost(formData, this.userStore.token);
 
       // Reset form fields

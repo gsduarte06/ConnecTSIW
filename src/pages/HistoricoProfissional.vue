@@ -41,19 +41,7 @@
                 >
                   {{ jobType.position_desc }}
                 </option>
-                <option value="custom">Add new...</option>
               </select>
-              <div v-if="selectedOption === 'custom'">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="newOption"
-                  v-model="newOption"
-                  placeholder="Enter new option"
-                  @keydown.enter="addOption"
-                />
-                <button @click="addOption" v-if="selectedOption">Add</button>
-              </div>
             </div>
             <div class="form-group">
               <label for="jobDescription">Job Description</label>
@@ -108,18 +96,16 @@
           <div @click="editBG(job)">
             <h3>{{ job.name_company }}</h3>
             <p>
-              <strong>Distrito:</strong>
+              <strong>District:</strong>
               {{ districts.find((d) => d.id_district == job.id_district).district }}
             </p>
             <p>
-              <strong>Tipo de Cargo:</strong>
+              <strong>Position:</strong>
               {{ jobTypes.find((d) => d.id_position == job.id_position).position_desc }}
             </p>
-            <p><strong>Descrição do Cargo:</strong> {{ job.descricao_position }}</p>
-            <p><strong>Data de Início:</strong> {{ job.begin_date }}</p>
-            <p v-if="job.end_date">
-              <strong>Data de Término:</strong> {{ job.end_date }}
-            </p>
+            <p><strong>Description:</strong> {{ job.descricao_position }}</p>
+            <p><strong>Begin Date:</strong> {{ job.begin_date }}</p>
+            <p v-if="job.end_date"><strong>End Date:</strong> {{ job.end_date }}</p>
             <button @click="removeJob(job.id_background)" class="delete-btn">
               <i class="fas fa-trash-alt"></i>
             </button>
@@ -255,13 +241,6 @@ export default {
       console.log(index);
       await api.del(`backgrounds/${index}`, this.token);
       await this.userStore.fetchBackground(this.token);
-    },
-    async addOption() {
-      let data = {};
-      data.position = this.newOption;
-      await this.positionStore.addPosition(data, this.token);
-      await this.positionStore.fetchPositions(this.token);
-      this.selectedOption = this.newOption;
     },
   },
 };

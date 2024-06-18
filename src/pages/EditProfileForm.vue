@@ -19,6 +19,18 @@
         <base-input label="Username" placeholder="Username" v-model="username">
         </base-input>
       </div>
+      <div class="col-md-6 pr-md-1">
+        <base-input label="Email" placeholder="Email" v-model="email"> </base-input>
+      </div>
+      <div class="col-md-6 pl-md-1">
+        <base-input
+          label="Password"
+          placeholder="Password"
+          v-model="password"
+          type="password"
+        >
+        </base-input>
+      </div>
     </div>
     <div class="row">
       <div class="col-md-12">
@@ -102,7 +114,9 @@ export default {
       lastName: "",
       username: "",
       nif: "",
+      password: "",
       about: "",
+      email: "",
       cv: null,
       fileName: "",
     };
@@ -118,6 +132,8 @@ export default {
       this.username = this.userStore.getUser.username || "";
       this.about = this.userStore.getUser.about || "";
       this.filename = "";
+      this.email = this.userStore.getUser.email || "";
+      this.password = "";
     },
     viewProfessionalHistory() {
       this.$router.push("/professional-history");
@@ -159,9 +175,19 @@ export default {
         formData.append("username", this.username);
         addXp += 100;
       }
+      if (this.validator(this.email, this.user.email)) {
+        formData.append("email", this.email);
+        addXp += 100;
+      }
+
       if (this.cv != null) {
         formData.append("pdf", this.cv);
       }
+
+      if (this.password != null) {
+        formData.append("password", this.password);
+      }
+
       let oldxp = await api.get(
         `users/${this.userStore.userId}/xp`,
         this.userStore.token
