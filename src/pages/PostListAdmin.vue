@@ -143,7 +143,6 @@ export default {
     },
     async deletePost(id) {
       try {
-        console.log(id);
         await api.del(`posts/${id}`, this.userStore.token);
         this.fetchPosts();
       } catch (error) {
@@ -153,12 +152,10 @@ export default {
     async openParticipantsModal(post) {
       for (let presence of post.present_users) {
         let name = await api.get(`users/${presence.id_user}`);
-        console.log(name);
         presence.username = name.username;
         presence.CV = name.CV;
       }
       this.selectedPost = post.present_users;
-      console.log(post.present_users);
       this.showModal = true;
     },
     closeParticipantsModal() {

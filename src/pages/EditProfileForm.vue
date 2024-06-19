@@ -139,7 +139,6 @@ export default {
       this.$router.push("/professional-history");
     },
     onImageChange(event) {
-      console.log(event.target.files);
       const file = event.target.files[0]; // Get the selected file
       if (file) {
         const reader = new FileReader(); // Create a FileReader object
@@ -192,10 +191,8 @@ export default {
         `users/${this.userStore.userId}/xp`,
         this.userStore.token
       );
-      console.log(oldxp[0].xp);
       addXp += parseInt(oldxp[0].xp);
       formData.append("xp", addXp);
-      console.log(formData);
       await this.userStore.updateUserForm(formData);
     },
 

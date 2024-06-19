@@ -10,7 +10,6 @@ export const useUserStore = defineStore("user", {
     users: {},
   }),
   async mounted () {
-    console.log(userId);
     if(userId != null){
       await this.fetchUser()
     }
@@ -44,7 +43,6 @@ export const useUserStore = defineStore("user", {
         const data = await api.get(`users/${this.userId}`);
         this.user = data;
         sessionStorage.setItem("user", JSON.stringify(data))
-        console.log(this.user);
       } catch (error) {
         console.error("Error fetching user:", error);
         throw error;
@@ -55,7 +53,6 @@ export const useUserStore = defineStore("user", {
       try {
         const data = await api.get(`users/`);
         this.users = data;
-        console.log(this.user);
       } catch (error) {
         console.error("Error fetching user:", error);
         throw error;
@@ -82,7 +79,6 @@ export const useUserStore = defineStore("user", {
     async updateBackground(BgId,data,token) {
       try {
         const redata = await api.patch(`backgrounds/${BgId}`, data,token);
-        console.log(redata);
         return redata
       } catch (error) {
         console.error("Error in store registering:", error);
@@ -92,9 +88,7 @@ export const useUserStore = defineStore("user", {
     async updateUser(data) {
       try {
         const redata = await api.patch(`users/${this.userId}/`, data , this.token);
-        console.log(redata);
         await this.fetchUser();
-        console.log(this.user);
       } catch (error) {
         console.error("Error in store fetching user:", error);
         throw error;
@@ -104,9 +98,7 @@ export const useUserStore = defineStore("user", {
     async updateUserForm(data) {
       try {
         const redata = await api.patchForm(`users/${this.userId}/`, data , this.token);
-        console.log(redata);
         await this.fetchUser();
-        console.log(this.user);
       } catch (error) {
         console.error("Error in store fetching user:", error);
         throw error;
@@ -116,7 +108,6 @@ export const useUserStore = defineStore("user", {
     async login(userlog) {
       try {
         const data = await api.post('users/login', userlog);
-        console.log(data);
         this.userId = data.loggedUserId;
         this.token = data.accessToken;
         sessionStorage.setItem('userID', JSON.stringify(data.loggedUserId));

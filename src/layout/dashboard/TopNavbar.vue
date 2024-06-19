@@ -136,7 +136,6 @@ export default {
       await usePostsStore().fetchPosts();
       let userId = useUserStore().userId;
       const posts = usePostsStore().getAllPosts;
-      console.log(posts);
       let newPosts = posts.filter(
         (post) =>
           post.date_post.toString().split("-")[1] === "0" + (new Date().getMonth() + 1) ||
@@ -160,7 +159,6 @@ export default {
           new Date(post.begin_date.toString()).getDate() <= twoDaysAfter.getDate() &&
           post.present_users.some((presence) => presence.id_user == userId)
       );
-      console.log(newEvent);
 
       for (let post of newEvent) {
         this.notifications.push({
@@ -175,7 +173,6 @@ export default {
           post.id_type_post == 2 &&
           new Date(post.end_date.toString()).getDate() <= twoDaysAfter.getDate()
       );
-      console.log(endVacancy);
 
       for (let post of endVacancy) {
         this.notifications.push({

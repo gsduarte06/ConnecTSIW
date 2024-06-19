@@ -155,7 +155,6 @@ export default {
   methods: {
     editBG(job) {
       this.edit = true;
-      console.log(job);
       this.startDate = job.begin_date;
       if (job.end_date != null) this.endDate = job.end_date;
       this.selectedDistrict = job.id_district;
@@ -182,10 +181,7 @@ export default {
         begin_date: this.startDate,
         end_date: this.endDate || null,
       };
-      console.log(formData);
-
       const res = await this.userStore.updateBackground(this.jobId, formData, this.token);
-      console.log(res);
 
       await this.userStore.fetchBackground(this.token);
 
@@ -213,7 +209,6 @@ export default {
         endDate: this.endDate || null,
         idUser: this.userStore.getUser.id_user,
       };
-      console.log(formData);
       await this.userStore.addBackground(formData, this.token);
 
       // Limpar campos do formulário após enviar
@@ -238,7 +233,6 @@ export default {
     },
 
     async removeJob(index) {
-      console.log(index);
       await api.del(`backgrounds/${index}`, this.token);
       await this.userStore.fetchBackground(this.token);
     },

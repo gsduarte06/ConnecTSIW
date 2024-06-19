@@ -15,7 +15,6 @@ export const usePositionStore = defineStore("position", {
       try {
         const data = await api.get(`positions`, token);
         this.positions = data;
-        console.log(this.positions);
       } catch (error) {
         console.error("Error in store fetching user:", error);
         throw error;

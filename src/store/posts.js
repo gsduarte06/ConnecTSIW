@@ -23,7 +23,6 @@ export const usePostsStore = defineStore("posts", {
           const presence = await api.get(`posts/${post.id_post}/present_users`)
           post.present_users = presence
         }
-        console.log(data);
         this.posts = data;
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -56,7 +55,6 @@ export const usePostsStore = defineStore("posts", {
     async createPost(data,token) {
       try {
         const redata = await api.postForm(`posts`, data ,token);
-        console.log(redata);
         await this.fetchPosts();
       } catch (error) {
         console.error("Error in store fetching user:", error);

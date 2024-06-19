@@ -77,7 +77,6 @@ export default {
       this.$refs.fileInput.click(); // Trigger file input click
     },
     async handleFileChange(event) {
-      console.log(event.target.files);
       const file = event.target.files[0]; // Get the selected file
       if (file) {
         const reader = new FileReader(); // Create a FileReader object
@@ -88,7 +87,6 @@ export default {
 
         let formData = new FormData();
         formData.append("image", file);
-        console.log(...formData);
         await this.userStore.updateUserForm(formData);
       }
     },

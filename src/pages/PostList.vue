@@ -134,7 +134,6 @@ export default {
       try {
         await api.post(`posts/${id}/likes`, LikeData, this.userStore.token);
       } catch (error) {
-        console.log(error.msg);
         if ((error.msg = "like is already in the database")) {
           await api.del(`posts/${id}/likes`, this.userStore.token, LikeData);
         }

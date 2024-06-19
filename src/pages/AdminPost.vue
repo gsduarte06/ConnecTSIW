@@ -148,9 +148,7 @@ export default {
   methods: {
     async createPost() {
       const convertDate = (date) => date.split("/").reverse().join("/");
-      console.log(convertDate(this.beginDate));
 
-      console.log(convertDate(this.endDate).toString().replace("T", " ") + ":00");
       let formData = new FormData();
       formData.append("image", this.image);
       formData.append("content", this.content);
@@ -163,7 +161,6 @@ export default {
           convertDate(this.endDate).toString().replace("T", " ") + ":00"
         );
 
-      console.log(formData);
       await this.postsStore.createPost(formData, this.userStore.token);
 
       // Reset form fields
@@ -176,7 +173,6 @@ export default {
       this.imageName = "";
     },
     onImageChange(event) {
-      console.log(event.target.files);
       const file = event.target.files[0]; // Get the selected file
       if (file) {
         const reader = new FileReader(); // Create a FileReader object

@@ -87,7 +87,6 @@ export default {
   },
   async created() {
     this.update();
-    console.log(this.comments);
   },
   methods: {
     getStatus() {
