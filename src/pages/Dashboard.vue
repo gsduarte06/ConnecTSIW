@@ -213,6 +213,10 @@ export default {
         data.push(result.count);
         labels.push(result.namePos);
       }
+      console.log(queryResult);
+      console.log(data);
+      console.log(labels);
+
       let chartData = {
         datasets: [
           {
@@ -234,10 +238,13 @@ export default {
         ],
         labels: labels,
       };
-      data.sort();
-      chartConfigs.greenChartOptions.scales.yAxes[0].ticks.suggestedMin = data[0];
-      data.reverse();
-      chartConfigs.greenChartOptions.scales.yAxes[0].ticks.suggestedMax = data[0] + 5;
+
+      let dataClone = Array.from(data);
+      dataClone.sort();
+      chartConfigs.greenChartOptions.scales.yAxes[0].ticks.suggestedMin = dataClone[0];
+      dataClone.reverse();
+      chartConfigs.greenChartOptions.scales.yAxes[0].ticks.suggestedMax =
+        dataClone[0] + 5;
 
       this.purpleLineChart.chartData = chartData;
     },

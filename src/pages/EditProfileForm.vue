@@ -183,7 +183,8 @@ export default {
         formData.append("pdf", this.cv);
       }
 
-      if (this.password != null) {
+      if (this.password != "") {
+        console.log("New Password");
         formData.append("password", this.password);
       }
 
@@ -193,6 +194,7 @@ export default {
       );
       addXp += parseInt(oldxp[0].xp);
       formData.append("xp", addXp);
+      console.log(...formData);
       await this.userStore.updateUserForm(formData);
     },
 

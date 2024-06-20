@@ -49,10 +49,9 @@
       <div class="modal-content">
         <div class="box">
           <div v-if="selectedUser">
-            <div>
-              <p class="text-muted">Personal Info</p>
-              <hr class="hrDivider" />
-            </div>
+            <p class="text-muted">Personal Info</p>
+            <p></p>
+
             <p>User ID: {{ selectedUser.id_user }}</p>
             <p>Username: {{ selectedUser.username }}</p>
             <p v-if="selectedUser.first_name">
@@ -70,6 +69,14 @@
                 <i class="fas fa-file-alt"></i> View CV</a
               >
             </p>
+            <hr class="hrDivider" />
+            <p class="text-muted" v-if="currentJob.position">
+              Current Job: {{ currentJob.position }}
+            </p>
+            <div v-if="currentJob.position != 'Unemployed'">
+              <p>District: {{ currentJob.district }}</p>
+              <p>Begin Date: {{ currentJob.begin_date }}</p>
+            </div>
           </div>
 
           <div class="text-right">
@@ -85,12 +92,15 @@
 
 <script>
 import { useUserStore } from "../store/user";
+import * as api from "../api/api";
+
 export default {
   data() {
     return {
       userStore: useUserStore(),
       showModal: false,
       selectedUser: null,
+      currentJob: null,
     };
   },
   methods: {
@@ -101,9 +111,32 @@ export default {
         alert("User deleted successfully!");
       }
     },
-    openModal(user) {
+    async openModal(user) {
       this.selectedUser = user;
-      console.log(user);
+      this.currentJob = await api.get(
+        `users/${user.id_user}/backgrounds`,
+        this.userStore.token
+      );
+      if (this.currentJob.length != 0) {
+        this.currentJob = this.currentJob[0];
+        if (this.currentJob.end_date == null) {
+          console.log(this.currentJob);
+          let districts = await api.get(`districts`, this.userStore.token);
+          this.currentJob.district = districts.find(
+            (d) => d.id_district === this.currentJob.id_district
+          ).district;
+
+          let position = await api.get(`positions`, this.userStore.token);
+          this.currentJob.position = position.find(
+            (d) => d.id_position === this.currentJob.id_position
+          ).position_desc;
+        }
+        this.currentJob = { position: "Unemployed" };
+      } else {
+        this.currentJob = { position: "Unemployed" };
+      }
+
+      console.log(this.currentJob);
       this.showModal = true;
     },
     closeModal() {
