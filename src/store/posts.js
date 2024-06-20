@@ -17,11 +17,16 @@ export const usePostsStore = defineStore("posts", {
     async fetchPosts() {
       try {
         const data = await api.get('posts');
+        const types = await api.get(`type_posts`);
+        console.log(types);
         for(let post of data){
           const likes = await api.get(`posts/${post.id_post}/likes`)
           post.likes = likes.length||0;
           const presence = await api.get(`posts/${post.id_post}/present_users`)
           post.present_users = presence
+          const type_name = types.find((type)=>type.id_type_post === post.id_type_post).type_post_desc
+          post.type_name= type_name
+
         }
         this.posts = data;
       } catch (error) {

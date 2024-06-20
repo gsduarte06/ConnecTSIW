@@ -22,21 +22,60 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="user in users" :key="user.id">
+                <tr v-for="user in users" :key="user.id_user">
                   <td>{{ user.id_user }}</td>
                   <td>{{ user.username }}</td>
                   <td>{{ user.email }}</td>
                   <td>
+                    <button class="btn btn-info btn-sm" @click="openModal(user)">
+                      <i class="fa fa-info-circle"></i> Detail
+                    </button>
                     <button
                       class="btn btn-danger btn-sm"
                       @click="deleteUser(user.id_user)"
                     >
-                      <i class="fas fa-trash-alt"></i> Delete
+                      <i class="fa fa-trash-alt"></i> Delete
                     </button>
                   </td>
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal" :class="{ 'is-active': showModal }">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <div class="box">
+          <div v-if="selectedUser">
+            <div>
+              <p class="text-muted">Personal Info</p>
+              <hr class="hrDivider" />
+            </div>
+            <p>User ID: {{ selectedUser.id_user }}</p>
+            <p>Username: {{ selectedUser.username }}</p>
+            <p v-if="selectedUser.first_name">
+              Full Name: {{ selectedUser.first_name + " " + selectedUser.last_name }}
+            </p>
+
+            <p v-if="selectedUser.CV">
+              CV:
+              <a
+                class="btn btn-danger btn-sm"
+                :href="selectedUser.CV"
+                target="_blank"
+                v-if="selectedUser.CV"
+              >
+                <i class="fas fa-file-alt"></i> View CV</a
+              >
+            </p>
+          </div>
+
+          <div class="text-right">
+            <button type="button" class="btn btn-secondary mr-1" @click="closeModal">
+              Close
+            </button>
           </div>
         </div>
       </div>
@@ -50,6 +89,8 @@ export default {
   data() {
     return {
       userStore: useUserStore(),
+      showModal: false,
+      selectedUser: null,
     };
   },
   methods: {
@@ -59,6 +100,14 @@ export default {
         await this.userStore.deleteUser(userId);
         alert("User deleted successfully!");
       }
+    },
+    openModal(user) {
+      this.selectedUser = user;
+      console.log(user);
+      this.showModal = true;
+    },
+    closeModal() {
+      this.showModal = false;
     },
   },
   computed: {
@@ -94,6 +143,9 @@ export default {
 
 .card-body {
   padding: 20px;
+}
+.hrDivider {
+  background-color: gray;
 }
 
 .table {
@@ -141,5 +193,37 @@ export default {
 
 .btn-light:hover {
   background-color: #e2e6ea;
+}
+
+.modal.is-active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-background {
+  background-color: rgba(32, 28, 44, 0.8);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.modal-content {
+  background: #201c2c;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.box {
+  padding: 1rem;
+}
+
+.text-right {
+  text-align: right;
 }
 </style>

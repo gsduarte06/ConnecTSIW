@@ -4,6 +4,7 @@
       <template slot-scope="{ row }">
         <td>
           <div class="mb-8">
+            <p class="text-muted">{{ row.type_name }}</p>
             <p class="title mb-0">{{ row.title }}</p>
             <p></p>
             <p class="text-muted">Start date: {{ row.date_inicio }}</p>
@@ -99,7 +100,7 @@ export default {
       selectedPost: {},
       users: [],
       userStore: useUserStore(),
-      isParticipating: false, // Nova variável
+      isParticipating: false,
     };
   },
   computed: {
@@ -115,7 +116,7 @@ export default {
         date_inicio: item.begin_date,
         date_fim: item.end_date,
         likes: item.likes,
-        present_users: item.usersP,
+        type_name: item.type_name,
       }));
     },
     isLoggedUser() {
