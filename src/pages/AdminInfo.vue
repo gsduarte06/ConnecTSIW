@@ -70,9 +70,8 @@
               >
             </p>
             <hr class="hrDivider" />
-            <p class="text-muted" v-if="currentJob.position">
-              Current Job: {{ currentJob.position }}
-            </p>
+            <p class="text-muted" v-if="currentJob.position">Job</p>
+            <p v-if="currentJob.position">Current Job: {{ currentJob.position }}</p>
             <div v-if="currentJob.position != 'Unemployed'">
               <p>District: {{ currentJob.district }}</p>
               <p>Begin Date: {{ currentJob.begin_date }}</p>
@@ -130,8 +129,9 @@ export default {
           this.currentJob.position = position.find(
             (d) => d.id_position === this.currentJob.id_position
           ).position_desc;
+        } else {
+          this.currentJob = { position: "Unemployed" };
         }
-        this.currentJob = { position: "Unemployed" };
       } else {
         this.currentJob = { position: "Unemployed" };
       }
