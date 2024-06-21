@@ -35,7 +35,7 @@
     <div class="row">
       <div class="col-md-12">
         <div class="form-group">
-          <label for="about">Sobre</label>
+          <label for="about">About me</label>
           <div>
             <textarea
               rows="4"
@@ -67,7 +67,7 @@
     <div class="row">
       <div class="col-md-6 pr-md-1">
         <div class="form-group">
-          <label>Experiência</label>
+          <label>Xp</label>
           <div>
             <span>{{ user.xp }}</span>
           </div>
@@ -75,7 +75,7 @@
       </div>
       <div class="col-md-6 pl-md-1">
         <div class="form-group">
-          <label>Data de criação</label>
+          <label>Creation Date</label>
           <div>
             <span>{{ user.create_date.split("T")[0] }}</span>
           </div>
@@ -85,7 +85,7 @@
     <div class="row">
       <div class="col-md-6 pr-md-1">
         <router-link class="btn btn-primary" to="/historicoprofissional"
-          >Historico Profissional</router-link
+          >Professional Background</router-link
         >
       </div>
       <div class="col-md-6 pl-md-1 d-flex justify-content-end align-items-center">
